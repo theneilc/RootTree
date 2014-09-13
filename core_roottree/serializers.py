@@ -2,8 +2,8 @@ from rest_framework import serializers
 from core_roottree.models import *
 
 class SessionWriteSerializer(serializers.ModelSerializer):
-    developer = serializers.PrimaryKeyRelatedField()
-    client = serializers.PrimaryKeyRelatedField()
+    developer = serializers.SlugRelatedField(slug_field='uuid')
+    client = serializers.SlugRelatedField(slug_field='uuid')
 
     class Meta:
         model = Session

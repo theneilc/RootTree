@@ -8,7 +8,7 @@ DEFAULT_POLL_TIME = datetime(1901,1,1)
 
 
 class ClientUser(models.Model):
-    uuid = models.CharField(max_length=32)
+    uuid = models.CharField(max_length=32, unique=True)
     # email = models.EmailField(unique=True, max_length=254)
     user = models.OneToOneField(User)
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
@@ -16,12 +16,12 @@ class ClientUser(models.Model):
 
 class Developer(models.Model):
     # email = models.EmailField(unique=True, max_length=254)
-    uuid = models.CharField(max_length=32)
+    uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
 
 
 class Session(TimeStampedModel):
-    uuid = models.CharField(max_length=32)
+    uuid = models.CharField(max_length=32, unique=True)
     client = models.ForeignKey(ClientUser)
     developer = models.ForeignKey(Developer)
 

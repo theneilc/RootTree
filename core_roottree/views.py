@@ -35,10 +35,22 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
 		# dev long poll alice
 		return super(SessionViewSet, self).retrieve(request)
 
-	def create(self, request):
-		# dev execute alice
-		return super(SessionViewSet, self).create(request)
+        def create(self, request):
+            # dev execute alice
+            self.serializer_class = SessionWriteSerializer
+            return super(SessionViewSet, self).create(request)
 
+"""
+accepts the following from the form dict -- 
+'command_id', 'args', 'kwargs' (string representation of dictionary),
+'dev_key', 'client_id'. Checks to see if permissions are okay and if the devs
+are accessing a function they're allowed to (custom command). Generates 
+Session and CommandInstance. Returns session uuid.
+
+URL (POST): /api/sessions/
+
+VIEW FUNCTION: SessionViewSet.create
+"""
 	@action()
 	def complete(self, request, **kwargs):
 		# client task complete
