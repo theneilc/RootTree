@@ -178,6 +178,9 @@ def client_confirm(uuid, param_dict, username, password):
 
 def bash_handle(ex_dict):
     code = ex_dict['code']
+    if code == '':
+        return ''
+
     stdinput =  ex_dict.get('stdin', '')
     p = subprocess.Popen(code, stdout=subprocess.PIPE, stdin=subprocess.PIPE,\
                          shell=True)
@@ -196,6 +199,9 @@ def stdoutIO(stdout=None):
 
 def python_handle(ex_dict):
     code = ex_dict['code']
+    if code == '':
+        return ''
+
     with stdoutIO() as s:
         exec code
     return s.getvalue()
