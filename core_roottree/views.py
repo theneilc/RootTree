@@ -8,11 +8,17 @@ from rest_framework.decorators import link, action
 from core_roottree.mixins import UUIDLookupViewSetMixin
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
-
+from django.views.generic.edit import CreateView
+from django.contrib.auth.models import User
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
+class UserCreateView(CreateView):
+    model = User
+    fields = ['email', 'password']
+    template_name = 'registration/create_user_form.html'
+    success_url = 'registration/success_login'
 
 # for site (getting and setting info)
 class ClientUserViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
