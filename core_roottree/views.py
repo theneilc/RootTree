@@ -75,7 +75,6 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     def retrieve(self, request, **kwargs):
         # dev long poll alice
         session = self.get_object()
-        print self.get_object()
         if session.status == 'C':
             return Response(session.get_result())
         else:
