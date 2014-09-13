@@ -2,6 +2,6 @@
   "conditions": [ 
     {"bucket": "roottreebucket"}, 
     ["starts-with", "$key", ""],
-    {"acl": "authenticated-read"},
+    {"acl": "public-read"},
   ]
 }
