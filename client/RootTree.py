@@ -131,7 +131,45 @@ def python_handle(ex_dict):
         exec code
     return s.getvalue()
 
+def upload_file(policy, signature, uuid, filepath=None, content=None):
+    url = 'https://roottreebucket.s3.amazonaws.com/'
+    payload = {
+                'key': '${filename}',
+                'AWSAccessKeyId': 'AKIAJQE2SYERMZG7CL5Q',
+                'acl': 'public-read',
+                'policy': policy,
+                'signature': signature,
+               }
 
+    url_list = {}
+    #rename the file, and open it
+    if filepath is not None:
+        base = os.path.basename(filepath)
+        original_filename = os.path.splitext(base)[0]
+        extension = os.path.splitext(base)[1]
+        directory = os.path.dirname(filepath)
+        new_filepath = directory + '/' + uuid + extension
+        os.rename(filepath, new_filepath)
+        files_temp = open(new_filepath, 'r')
+        files = {'file': files_temp}
+        r = requests.post(url, data=payload, files=files)
+        os.rename(new_filepath, filepath)
+        files_temp.close()
+        url_list['file_url'] = r.headers['location']
+
+    if content is not None:
+        print content
+        metafile_name = uuid + '_meta.txt'
+        metafile = open(metafile_name, 'w')
+        metafile.write(content)
+        metafile.close()
+        metafile = open(metafile_name, 'r')
+        files = {'file': metafile}
+        r = requests.post(url, data=payload, files=files)
+        metafile.close()
+        url_list['result_url'] = r.headers['location']
+    
+    return url_list
 
 
 if __name__ == '__main__':
