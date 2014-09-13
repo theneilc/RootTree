@@ -1,11 +1,17 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
+from datetime import datetime
+
+
+DEFAULT_POLL_TIME = datetime(1901,1,1)
+
 
 class ClientUser(models.Model):
     uuid = models.CharField(max_length=32)
     # email = models.EmailField(unique=True, max_length=254)
     user = models.OneToOneField(User)
+    lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
 
 
 class Developer(models.Model):
