@@ -21,7 +21,7 @@ class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
-
+    company = models.CharField(max_length=100)
 
 class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
@@ -34,8 +34,14 @@ class Session(TimeStampedModel, UUIDModelMixin):
         (u'C', u'Complete'),
     )
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
-    result = models.TextField(null=True, blank=True)
+    
+    # s3 urls
+    file_url = models.TextField(null=True, blank=True)
+    result_url = models.TextField(null=True, blank=True)
+    # end s3 urls
+
     callback_url = models.URLField(null=True, blank=True)
+
     commandinstance = models.ForeignKey('CommandInstance')
 
     @property
@@ -65,6 +71,7 @@ class CommandInstance(models.Model):
 
 
 class Command(TimeStampedModel):
+    name = models.CharField(max_length=50, default='Unnamed Command')
     code = models.TextField()
     owner = models.ForeignKey(Developer, null=True, blank=True)
     LANGUAGE_CHOICES = (

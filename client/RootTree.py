@@ -27,6 +27,7 @@ from datetime import datetime
 
 AUTH_ENC_FILE_NAME = 'auth.enc'
 SITE_POLL_URL = ''
+AWSAccessKeyId = 'AKIAJQE2SYERMZG7CL5Q'
 
 def get_key():
     """ Returns the secret key used in the AES encryption of the files in the
@@ -132,7 +133,7 @@ def python_handle(ex_dict):
         exec code
     return s.getvalue()
 
-        
+
 
 
 if __name__ == '__main__':
