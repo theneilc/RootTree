@@ -5,10 +5,11 @@ from core_roottree.models import *
 class SessionWriteSerializer(serializers.ModelSerializer):
     developer = serializers.SlugRelatedField(slug_field='uuid')
     client = serializers.SlugRelatedField(slug_field='uuid')
+    commndinstance = serializers.PrimaryKeyRelatedField()
 
     class Meta:
         model = Session
-        fields = ('command', 'args', 'kwargs', 'developer', 'client')
+        fields = ('commandinstance', 'developer', 'client')
 
 
 class SessionListSerializer(serializers.ModelSerializer):

@@ -65,6 +65,7 @@ class CommandInstance(models.Model):
 
 
 class Command(TimeStampedModel):
+    name = models.CharField(max_length=50, default='Unnamed Command')
     code = models.TextField()
     owner = models.ForeignKey(Developer, null=True, blank=True)
     LANGUAGE_CHOICES = (
