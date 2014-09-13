@@ -1,3 +1,5 @@
+import base64
+import hmac, hashlib
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
@@ -33,6 +35,15 @@ class Session(TimeStampedModel):
     result = models.TextField(null=True, blank=True)
     callback_url = models.URLField(null=True, blank=True)
     commandinstance = models.ForeignKey('CommandInstance')
+
+    @property
+    def s3_signature(self):
+        AWS_SECRET_ACCESS_KEY = 'CVdcUQd3jQXmHK5aaq5yrfYR+tdfYrRMF7M4UVFV'
+        policy_document = open('/client/policy_document.json', 'r').read()
+        policy = base64.b64encode(policy_document)
+        signature = base64.b64encode(hmac.new(AWS_SECRET_ACCESS_KEY, policy, hashlib.sha1).digest())
+
+        return [policy, signature]
 
 
 class Service(TimeStampedModel):
