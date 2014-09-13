@@ -8,10 +8,30 @@ from rest_framework.decorators import link, action
 from core_roottree.mixins import UUIDLookupViewSetMixin
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
+import requests
 
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
+
+
+# for accessing S3 images through our server
+class FileView(APIView):
+    def get(self, request):
+        # check permissions
+        session_id = request.QUERY_PARAMS.get('s')
+        if not session_id:
+            return Response("Missing key 's'",
+                            status=status.HTTP_400_BAD_REQUEST)
+        session = Session.objects.get(uuid=session_id)
+        r = requests.get(session.file_url)
+        headers = {
+            'content-length':r.headers['content-length']
+        }
+        response = Response(r.content, status=r.status_code,
+                            headers=headers,
+                            content_type=r.headers['content-type'])
+        return response
 
 
 # for site (getting and setting info)
@@ -48,9 +68,20 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
         sessions_services_serialized = self.list_serializer_class(session_services).data
         return Response(sessions_tasks_serialized + sessions_services_serialized)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request):
         # dev long poll alice
+        session = self.get_object()
+        if session.status = 'C':
+            return session.result
         return super(SessionViewSet, self).retrieve(request)
+
+        """
+        Query Session state given the session id, user, and dev.
+        If completed, return our URL to get generated resource from S3 OR the
+        actual contents in whatever JSON structure is deemed appropriate.
+        Otherwise, return null.
+
+        """
 
     def create(self, request):
         # dev execute alice
@@ -71,11 +102,11 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
                 self.object = serializer.save(force_insert=True)
                 self.post_save(self.object, created=True)
                 headers = self.get_success_headers(serializer.data)
-                return Response(serializer.data, status=status.HTTP_201_CREATED,
+                return Response(self.object.uuid, status=status.HTTP_201_CREATED,
                                 headers=headers)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except (AttributeError, MultiValueDictKeyError) as e:
+        except (KeyError, MultiValueDictKeyError) as e:
             print_exc()
             return Response("Missing key %s." % e.message,
                             status=status.HTTP_400_BAD_REQUEST)
