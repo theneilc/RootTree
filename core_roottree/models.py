@@ -17,20 +17,22 @@ def build_absolute_uri(path, request=None):
     else:
         return settings.ABSOLUTE_URL_ROOT + path
 
+class CustomClientUserManager(models.Manager):
+    def create_clientuser_from_user(self, user):
+        self.model.objects.create(user=user)
 
 class ClientUser(UserModelMixin, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     # email = models.EmailField(unique=True, max_length=254)
     user = models.OneToOneField(User)
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
-
+    objects = CustomClientUserManager()
 
 class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
-    company = models.CharField(max_length=100, default=''
-)
+    company = models.CharField(max_length=100, default='')
 
 class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)

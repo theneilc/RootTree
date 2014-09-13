@@ -17,10 +17,15 @@ import requests
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
-class UserCreateView(CreateView):
-    form_class = UserSignUpForm
-    template_name = 'registration/create_user_form.html'
-    success_url = 'registration/success_login'
+class ClientUserCreateView(CreateView):
+    form_class = ClientUserSignUpForm
+    template_name = 'registration/create_clientuser_form.html'
+    success_url = 'registration/success_login/clientuser'
+
+class DevCreateView(CreateView):
+    form_class = DevSignUpForm
+    template_name = 'registration/create_dev_form.html'
+    success_url = 'registration/success_login/dev'
 
 # for accessing S3 files through our server
 # abandoned because we're just using public URLs for now
