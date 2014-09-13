@@ -4,25 +4,26 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
 from datetime import datetime
+from core_roottree.mixins import *
 
 
 DEFAULT_POLL_TIME = datetime(1901,1,1)
 
 
-class ClientUser(models.Model):
+class ClientUser(UserModelMixin, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     # email = models.EmailField(unique=True, max_length=254)
     user = models.OneToOneField(User)
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
 
 
-class Developer(models.Model):
+class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
 
 
-class Session(TimeStampedModel):
+class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     client = models.ForeignKey(ClientUser)
     developer = models.ForeignKey(Developer)
@@ -45,11 +46,6 @@ class Session(TimeStampedModel):
         signature = base64.b64encode(hmac.new(AWS_SECRET_ACCESS_KEY, policy, hashlib.sha1).digest())
 
         return [policy, signature]
-
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.uuid = uuid.uuid4().hex
-        super(Session, self).save(*args, **kwargs)
 
 
 class Service(TimeStampedModel):
