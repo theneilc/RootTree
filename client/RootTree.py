@@ -31,7 +31,7 @@ from Crypto.Cipher import AES
 AUTH_ENC_FILE_NAME = 'auth.enc'
 SITE_POLL_URL = ''
 SITE_CONFIRM_URL = ''
-AWSAccessKeyId = 'AKIAJQE2SYERMZG7CL5Q'
+AWSAccessKeyId = 'AKIAISF6Q3NMVEHU2EOA'
 
 def encrypt_file(key, in_contents, out_filename, chunksize=64*1024):
     """ Encrypts a string using AES (CBC mode) with the given key.
@@ -204,7 +204,7 @@ def upload_file(policy, signature, uuid, filepath=None, content=None):
     url = 'https://roottreebucket.s3.amazonaws.com/'
     payload = {
                 'key': '${filename}',
-                'AWSAccessKeyId': 'AKIAJQE2SYERMZG7CL5Q',
+                'AWSAccessKeyId': AWSAccessKeyId,
                 'acl': 'public-read',
                 'policy': policy,
                 'signature': signature,
