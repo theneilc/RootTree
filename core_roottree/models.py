@@ -4,25 +4,27 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
 from datetime import datetime
+from core_roottree.mixins import *
 
 
 DEFAULT_POLL_TIME = datetime(1901,1,1)
 
 
-class ClientUser(models.Model):
-    uuid = models.CharField(max_length=32)
+class ClientUser(UserModelMixin, UUIDModelMixin):
+    uuid = models.CharField(max_length=32, unique=True)
     # email = models.EmailField(unique=True, max_length=254)
     user = models.OneToOneField(User)
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
 
 
-class Developer(models.Model):
+class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
+    uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
     company = models.CharField(max_length=100)
 
-class Session(TimeStampedModel):
-    uuid = models.CharField(max_length=32)
+class Session(TimeStampedModel, UUIDModelMixin):
+    uuid = models.CharField(max_length=32, unique=True)
     client = models.ForeignKey(ClientUser)
     developer = models.ForeignKey(Developer)
 
@@ -69,6 +71,7 @@ class CommandInstance(models.Model):
 
 
 class Command(TimeStampedModel):
+    name = models.CharField(max_length=50, default='Unnamed Command')
     code = models.TextField()
     owner = models.ForeignKey(Developer, null=True, blank=True)
     LANGUAGE_CHOICES = (
@@ -77,3 +80,9 @@ class Command(TimeStampedModel):
     )
     language = models.CharField(max_length=1, default='b')
     expectfile = models.BooleanField(default=False)
+
+
+class Permission(TimeStampedModel):
+    developer = models.ForeignKey(Developer)
+    client = models.ForeignKey(ClientUser)
+    command = models.ForeignKey(Command)
