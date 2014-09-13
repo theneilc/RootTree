@@ -35,7 +35,7 @@ class Session(TimeStampedModel):
     
     # s3 urls
     file_url = models.TextField(null=True, blank=True)
-    result_url = models.TextField()
+    result_url = models.TextField(null=True, blank=True)
     # end s3 urls
 
     callback_url = models.URLField(null=True, blank=True)
