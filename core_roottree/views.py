@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+<<<<<<< HEAD
 from rest_framework import viewsets, status
 from rest_framework import views
+=======
+from rest_framework import viewsets, status, views
+>>>>>>> 41cb749e39d6f2c660a5a3c554992d67a9b1366a
 from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
@@ -20,11 +24,11 @@ def index(request):
 
 class UserCreateView(CreateView):
     form_class = UserSignUpForm
-    model = User
     template_name = 'registration/create_user_form.html'
     success_url = 'registration/success_login'
 
-# for accessing S3 images through our server
+# for accessing S3 files through our server
+# abandoned because we're just using public URLs for now
 class FileView(views.APIView):
     def get(self, request):
         # check permissions
@@ -33,6 +37,9 @@ class FileView(views.APIView):
             return Response("Missing key 's'",
                             status=status.HTTP_400_BAD_REQUEST)
         session = Session.objects.get(uuid=session_id)
+        if not session.file_url:
+            return Response("No file for this session",
+                            status=status.HTTP_404_NOT_FOUND)
         r = requests.get(session.file_url)
         headers = {
             'content-length':r.headers['content-length']
@@ -44,18 +51,18 @@ class FileView(views.APIView):
 
 
 # for site (getting and setting info)
-class ClientUserViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
+class ClientUserViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     model = ClientUser
 
 
 # for site (getting and setting info)
-class DeveloperViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
+class DeveloperViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     model = Developer
 
 
 # for client long poll to get sessions
 # get task url on diagram
-class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
+class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     model = Session
     list_serializer_class = SessionListSerializer
     complete_serializer_class = SessionSerializer
@@ -77,20 +84,13 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
         sessions_services_serialized = self.list_serializer_class(session_services).data
         return Response(sessions_tasks_serialized + sessions_services_serialized)
 
-    def retrieve(self, request):
+    def retrieve(self, request, **kwargs):
         # dev long poll alice
         session = self.get_object()
         if session.status == 'C':
-            return session.result
-        return super(SessionViewSet, self).retrieve(request)
-
-        """
-        Query Session state given the session id, user, and dev.
-        If completed, return our URL to get generated resource from S3 OR the
-        actual contents in whatever JSON structure is deemed appropriate.
-        Otherwise, return null.
-
-        """
+            return Response(session.get_result())
+        else:
+            return Response()
 
     def create(self, request):
         # dev execute alice

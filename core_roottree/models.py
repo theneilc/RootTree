@@ -5,6 +5,7 @@ from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
 from datetime import datetime
 from core_roottree.mixins import *
+from django.conf import settings
 
 
 DEFAULT_POLL_TIME = datetime(1901,1,1)
@@ -47,8 +48,9 @@ class Session(TimeStampedModel, UUIDModelMixin):
     commandinstance = models.ForeignKey('CommandInstance')
 
     def get_local_file_url(self, request=None):
-        path = '/api/file/?s=%s' % self.uuid
-        return build_absolute_uri(path, request)
+        # path = '/api/file/?s=%s' % self.uuid
+        # return build_absolute_uri(path, request)
+        return self.file_url
 
     def get_result(self, request=None):
         # reads the contents of the result_url and file_url and returns
