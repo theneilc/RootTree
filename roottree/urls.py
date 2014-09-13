@@ -3,6 +3,8 @@ from django.contrib import admin
 from rest_framework import routers
 from django.views.generic import TemplateView
 from core_roottree import views
+from django.contrib.auth.views import login, logout
+
 
 router = routers.DefaultRouter()
 router.register(r'sessions', views.SessionViewSet)
@@ -17,4 +19,6 @@ urlpatterns = patterns(
     url(r'^test$', 'core_roottree.views.index'),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$',  login),
+    url(r'^accounts/logout/$', logout)
 )

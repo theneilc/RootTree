@@ -53,6 +53,8 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
     def complete(self, request, **kwargs):
         # client task complete
         session = self.get_object()
+        result_url = request.DATA.get('s3_url')
+        session.result_url = result_url
         session.status = 'C'
         session.save()
         return Response(self.complete_serializer_class(session).data)

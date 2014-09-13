@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+
+{% block nav %}
+  <nav class="navbar navbar-default navbar-fixed-top navbar-shrink disable-shrink">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Root Tree</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden active">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#about">How it works</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#team">Developers</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>  
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+  
+ <!--  <form action="" method="post">
+    <div class="row">
+      <label for="username">User name:</label>
+      <input type="text" name="username" value="" id="username">
+    </div>
+    <div class="row">
+      <label for="password">Password:</label>
+      <input type="password" name="password" value="" id="password">
+    </div>
+
+    <input type="submit" value="login" />
+    <input type="hidden" name="next" value="{{ next|escape }}" />
+  </form> -->
+
+  <div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <h1 class="text-center login-title">Sign in</h1>
+            <div class="text-center account-wall">
+                {% if form.errors %}
+                <p class="error">Sorry, that's not a valid username or password</p>
+                {% endif %}
+
+                <form class="form-signin">
+                  <div class="row">
+                    <input type="text" class="form-control" placeholder="Email" required autofocus>
+                  </div>
+                  <div class="row">
+                    <input type="password" class="form-control" placeholder="Password" required>
+                  </div>
+                  <div class="row">
+                      <button class="btn btn-lg btn-primary btn-block" type="submit">
+                        Sign in</button>
+                  </div>
+                  <div class="row">
+                    <span class="pull-left">
+                      <input type="checkbox" value="remember-me">
+                      Remember me
+                    </span>
+                    <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                  </div>
+                </form>
+              <div class="row">
+                <a href="#" class="text-center new-account">Create an account </a>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
