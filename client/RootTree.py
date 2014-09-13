@@ -17,12 +17,79 @@ Notes:
 import requests
 import ast
 import subprocess
-import sys
 import StringIO
 import contextlib
 from threading import Thread
+import sys
+import os
+from Tkinter import *
+from datetime import datetime
 
+AUTH_ENC_FILE_NAME = 'auth.enc'
 SITE_POLL_URL = ''
+
+def get_key():
+    """ Returns the secret key used in the AES encryption of the files in the
+        Encryption module
+    """
+    SECRET_KEY_AES = 'e88a0fd7bc19496aba7f80f522c29722'
+    return SECRET_KEY_AES
+
+def get_credentials_from_file():
+    """ Returns the credentials created by this module's main method in a list
+    """
+    decrypted_auth = encrypt.decrypt_file(get_key(), AUTH_ENC_FILE_NAME)
+    return decrypted_auth.split(',')
+
+def getpwd(errorflag=0):
+    """ Prompts the running Python process with a Tkinter GUI for confirming
+        the input username and password with Dentboard
+    """
+    credentials = []
+    root = Tk()
+    usrbox = Entry(root)
+    pwdbox = Entry(root, show = '*')
+    def onpwdentry(evt):
+        credentials.append(usrbox.get())
+        credentials.append(pwdbox.get())
+        root.destroy()
+    def onokclick():
+        credentials.append(usrbox.get())
+        credentials.append(pwdbox.get())
+        root.destroy()
+
+
+    if errorflag != 0:
+        if errorflag == 1:
+            Label(root, text = "Your username or password were incorrect") \
+                 .pack(side='top')
+
+    Label(root, text = 'TheDentboard Username').pack(side = 'top')
+    usrbox.pack(side = 'top')
+
+    Label(root, text = 'Password').pack(side = 'top')
+    pwdbox.pack(side = 'top')
+
+    Button(root, command=onokclick, text = 'OK').pack(side = 'top')
+
+    root.mainloop()
+    return credentials
+
+def auth_main():
+    credentials = getpwd()
+    username = credentials[0]
+    password = credentials[1]
+    
+    #TODO MODIFY
+    while upload.test_credentials(username, password) == 0:
+        credentials = getpwd(1)
+        username = credentials[0]
+        password = credentials[1]
+
+    encrypt.encrypt_file(get_key(), username + ',' + password,
+                         AUTH_ENC_FILE_NAME)
+
+
 
 def poll_site(user, password):
     try:
