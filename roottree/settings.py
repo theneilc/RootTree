@@ -99,3 +99,6 @@ REST_FRAMEWORK = {
 
 # Template Dirs
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+# Other custom stuff
+ABSOLUTE_URL_ROOT = 'http://roottree.me'

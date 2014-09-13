@@ -48,6 +48,7 @@ if __name__ == "__main__":
 	filepath = '/Users/sanketchauhan/Downloads/sanke93.jpg'
 	# policy = 'eyJleHBpcmF0aW9uIjogIjIwMTUtMDEtMDFUMDA6MDA6MDBaIiwKICAiY29uZGl0aW9ucyI6IFsgCiAgICB7ImJ1Y2tldCI6ICJyb290dHJlZWJ1Y2tldCJ9LCAKICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICIiXSwKICAgIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sCiAgXQp9'
 	# signature = 'cppCKmmC45scE+EPLGl3idSn7/A='
+	AWS_SECRET_ACCESS_KEY = 'CVdcUQd3jQXmHK5aaq5yrfYR+tdfYrRMF7M4UVFV'
 	import base64
 	import hmac, hashlib
 	policy_document = open('policy_document.json', 'r').read()
