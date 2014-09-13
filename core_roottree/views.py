@@ -1,11 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-<<<<<<< HEAD
-from rest_framework import viewsets, status
-from rest_framework import views
-=======
 from rest_framework import viewsets, status, views
->>>>>>> 41cb749e39d6f2c660a5a3c554992d67a9b1366a
 from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
@@ -95,11 +90,12 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     def create(self, request):
         # dev execute alice
         try:
-            command_id = request.DATA['command']
+            command_name = request.DATA['command']
             args = request.DATA.get('args', '')
             kwargs = request.DATA.get('kwargs', '')
+            command = Command.objects.get(name=command_name)
             commandinstance = CommandInstance.objects.create(
-                command_id=command_id,
+                command=command,
                 args=args,
                 kwargs=kwargs
             )
