@@ -46,7 +46,7 @@ class Session(TimeStampedModel, UUIDModelMixin):
 
     @property
     def s3_signature(self):
-        AWS_SECRET_ACCESS_KEY = 'CVdcUQd3jQXmHK5aaq5yrfYR+tdfYrRMF7M4UVFV'
+        AWS_SECRET_ACCESS_KEY = open('/home/ubuntu/key.txt', 'r').read()
         policy_document = open('/client/policy_document.json', 'r').read()
         policy = base64.b64encode(policy_document)
         signature = base64.b64encode(hmac.new(AWS_SECRET_ACCESS_KEY, policy, hashlib.sha1).digest())

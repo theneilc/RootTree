@@ -27,7 +27,7 @@ from datetime import datetime
 
 AUTH_ENC_FILE_NAME = 'auth.enc'
 SITE_POLL_URL = ''
-AWSAccessKeyId = 'AKIAJQE2SYERMZG7CL5Q'
+AWSAccessKeyId = 'AKIAISF6Q3NMVEHU2EOA'
 
 def get_key():
     """ Returns the secret key used in the AES encryption of the files in the
@@ -135,7 +135,7 @@ def upload_file(policy, signature, uuid, filepath=None, content=None):
     url = 'https://roottreebucket.s3.amazonaws.com/'
     payload = {
                 'key': '${filename}',
-                'AWSAccessKeyId': 'AKIAJQE2SYERMZG7CL5Q',
+                'AWSAccessKeyId': AWSAccessKeyId,
                 'acl': 'public-read',
                 'policy': policy,
                 'signature': signature,
