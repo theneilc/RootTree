@@ -1,12 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework.views import APIView, ModelViewset
 from rest_framework.response import Response
 from core_roottree.models import *
 from rest_framework.decorators import link, action
 
-# Create your views here.
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
