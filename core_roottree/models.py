@@ -48,13 +48,9 @@ class CommandInstance(models.Model):
 class Command(TimeStampedModel):
     code = models.TextField()
     owner = models.ForeignKey(Developer, null=True, blank=True)
-
-    """LANGUAGE_CHOICES = (
-    (u'
+    LANGUAGE_CHOICES = (
+        (u'b', u'bash'),
+        (u'p', u'python'),
+    )
     language = models.CharField(max_length=1, default='b')
-    codeTextField (%s for args, %(kwarg_name))
-    ownerforeignkey to Developer
-    languageCharField
-    file_responseBool
-    
-    """
+    expectfile = models.BooleanField(default=False)
