@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets, status
+from rest_framework import views
 from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
@@ -19,12 +20,12 @@ def index(request):
 
 class UserCreateView(CreateView):
     form_class = UserSignUpForm
-    
+    model = User
     template_name = 'registration/create_user_form.html'
     success_url = 'registration/success_login'
 
 # for accessing S3 images through our server
-class FileView(APIView):
+class FileView(views.APIView):
     def get(self, request):
         # check permissions
         session_id = request.QUERY_PARAMS.get('s')
