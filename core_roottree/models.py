@@ -16,6 +16,7 @@ class ClientUser(models.Model):
 
 class Developer(models.Model):
     # email = models.EmailField(unique=True, max_length=254)
+    uuid = models.CharField(max_length=32)
     user = models.OneToOneField(User)
 
 
@@ -33,6 +34,11 @@ class Session(TimeStampedModel):
     result = models.TextField(null=True, blank=True)
     callback_url = models.URLField(null=True, blank=True)
     commandinstance = models.ForeignKey('CommandInstance')
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.uuid = uuid.uuid4().hex
+        super(Session, self).save(*args, **kwargs)
 
 
 class Service(TimeStampedModel):
@@ -60,3 +66,9 @@ class Command(TimeStampedModel):
     )
     language = models.CharField(max_length=1, default='b')
     expectfile = models.BooleanField(default=False)
+
+
+class Permission(TimeStampedModel):
+    developer = models.ForeignKey(Developer)
+    client = models.ForeignKey(ClientUser)
+    command = models.ForeignKey(Command)
