@@ -110,8 +110,10 @@ def thread_handle(ex_dict):
 
 def bash_handle(ex_dict):
     code = ex_dict['code']
-    p = subprocess.Popen(code, stdout=subprocess.PIPE, shell=True)
-    out, err = p.communicate()
+    stdinput =  ex_dict.get('stdin', '')
+    p = subprocess.Popen(code, stdout=subprocess.PIPE, stdin=subprocess.PIPE,\
+                         shell=True)
+    out, err = p.communicate(input=stdinput)
     return (out, err)[0] #TODO Might remove the index
 
 @contextlib.contextmanager
