@@ -11,18 +11,23 @@
                 <p class="error">Please fill in both fields.</p>
                 {% endif %}
 
-                <form class="form-signup">
-                  {{form.as_p}}
+                <form action="#" method="post">
+                {% csrf_token %}
+                  {{ form.non_field_errors }}
+                  	<div class="row">
+						<div class="fieldWrapper">
+					    	{{ form.email.errors }}
+					    	{{form.email}}
+						</div>
+					</div>
+					<div class="row">
+						<div class="fieldWrapper">
+						    {{ form.password.errors }}
+						    {{form.password}}
+						</div>
+					</div>
                   <div class="row">
-                      <button class="btn btn-lg btn-primary btn-block" type="submit">
-                        Sign up</button>
-                  </div>
-                  <div class="row">
-                    <span class="pull-left">
-                      <input type="checkbox" value="remember-me">
-                      Remember me
-                    </span>
-                    <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                      <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up">
                   </div>
                 </form>
             </div>

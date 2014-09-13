@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+<<<<<<< HEAD
+from rest_framework import viewsets, status
+from rest_framework import views
+=======
 from rest_framework import viewsets, status, views
+>>>>>>> 41cb749e39d6f2c660a5a3c554992d67a9b1366a
 from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
