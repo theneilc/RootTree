@@ -1,28 +1,41 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework.views import APIView
+from rest_framework import viewsets
+from rest_framework.views import APIView, ModelViewset
 from rest_framework.response import Response
+from core_roottree.models import *
+from rest_framework.decorators import link, action
 
 # Create your views here.
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
-class TaskAPIView(APIView):
-	def post(self, request):
-		# get task url
-		# return ID
+# for site (getting and setting info)
+class ClientUserViewSet(viewsets.ModelViewSet):
+	model = ClientUser
+
+# for site (getting and setting info)
+class DeveloperViewSet(viewsets.ModelViewSet):
+	model = Developer
+
+# for client long poll to get sessions
+# get task url on diagram
+class SessionViewSet(viewsets.ModelViewSet):
+	model = Session
+
+	def list(self, request):
+		# client long poll
 		return Response()
 
-class ClientPollAPIView(APIView):
-	def get(self, request):
-		# return task
+	def retrieve(self, request, pk=None):
+		# dev long poll
 		return Response()
 
-class ClientDoneAPIView(APIView):
-	def post(self, request):
-		# if file upload to s3 (through model method?)
+	def create(self, request):
+		# dev execute
 		return Response()
-	
-	def get(self, request):
-		# long polling from library 
+
+	@action()
+	def complete(self, request, **kwargs):
+		# client task complete
 		return Response()
