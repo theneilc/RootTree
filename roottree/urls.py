@@ -2,8 +2,10 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from rest_framework import routers
 from django.views.generic import TemplateView
+from core_roottree import views
 
 router = routers.DefaultRouter()
+router.register(r'sessions', views.SessionViewSet)
 
 urlpatterns = patterns(
     '',

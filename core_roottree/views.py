@@ -29,16 +29,15 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
 	def list(self, request):
 		# client long poll
 		sessions = self.get_queryset()
-
-		return Response()
+		return super(SessionViewSet, self).list(request)
 
 	def retrieve(self, request, pk=None):
-		# dev long poll
-		return Response()
+		# dev long poll alice
+		return super(SessionViewSet, self).retrieve(request)
 
 	def create(self, request):
-		# dev execute
-		return Response()
+		# dev execute alice
+		return super(SessionViewSet, self).create(request)
 
 	@action()
 	def complete(self, request, **kwargs):
