@@ -20,12 +20,12 @@ def index(request):
 class ClientUserCreateView(CreateView):
     form_class = ClientUserSignUpForm
     template_name = 'registration/create_clientuser_form.html'
-    success_url = 'registration/success_login/clientuser'
+    success_url = '/accounts/success/'
 
 class DevCreateView(CreateView):
     form_class = DevSignUpForm
     template_name = 'registration/create_dev_form.html'
-    success_url = 'registration/success_login/dev'
+    success_url = '/accounts/success/'
 
 # for accessing S3 files through our server
 # abandoned because we're just using public URLs for now

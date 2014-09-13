@@ -16,7 +16,7 @@ class ClientUserSignUpForm(UserCreationForm):
         return cleaned_data
         
     def save(self, commit=True):
-        ret = super(UserSignUpForm, self).save(commit=commit)
+        ret = super(ClientUserSignUpForm, self).save(commit=commit)
         u = self.instance
         ClientUser.objects.create(user=u)
         return ret
