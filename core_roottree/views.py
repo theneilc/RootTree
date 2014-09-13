@@ -6,6 +6,7 @@ from core_roottree.models import *
 from core_roottree.serializers import *
 from rest_framework.decorators import link, action
 from core_roottree.mixins import UUIDLookupViewSetMixin
+from core_roottree.forms import *
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic.edit import CreateView
@@ -17,8 +18,8 @@ def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
 class UserCreateView(CreateView):
-    model = User
-    fields = ['email', 'password']
+    form_class = UserSignUpForm
+    
     template_name = 'registration/create_user_form.html'
     success_url = 'registration/success_login'
 
@@ -78,7 +79,7 @@ class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
     def retrieve(self, request):
         # dev long poll alice
         session = self.get_object()
-        if session.status = 'C':
+        if session.status == 'C':
             return session.result
         return super(SessionViewSet, self).retrieve(request)
 
