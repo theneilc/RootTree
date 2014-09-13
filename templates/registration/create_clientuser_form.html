@@ -9,6 +9,7 @@
             <div class="text-center account-wall">
                 {% if form.errors %}
                 <p class="error">Please fill in both fields.</p>
+                {{form.errors}}
                 {% endif %}
 
                 <form action="#" method="post">
@@ -16,18 +17,18 @@
                   {{ form.non_field_errors }}
                   	<div class="row">
 						<div class="fieldWrapper">
-					    	{{ form.email.errors }}
+					    	{{form.email.errors }}
 					    	{{form.email}}
 						</div>
 					</div>
 					<div class="row">
 						<div class="fieldWrapper">
-						    {{ form.password.errors }}
-						    {{form.password}}
+						    {{ form.password1.errors }}
+						    {{form.password1}}
 						</div>
 					</div>
                   <div class="row">
-                      <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up">
+                      <input type="submit" value="Sign up">
                   </div>
                 </form>
             </div>
