@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from django.db import models
+import uuid
 
 
 class CustomLookupViewSetMixin(object):
@@ -15,3 +17,26 @@ class CustomLookupViewSetMixin(object):
 
 class UUIDLookupViewSetMixin(CustomLookupViewSetMixin):
     lookup_fields = ['uuid']
+
+
+class UserModelMixin(models.Model):
+    def create_user(self, email, password):
+        User.objects.create_user(
+            username=email,
+            password=password,
+            email=email
+        )
+        return user
+
+    class Meta:
+        abstract = True
+
+
+class UUIDModelMixin(models.Model):
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.uuid = uuid.uuid4().hex
+        super(UUIDModelMixin, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
