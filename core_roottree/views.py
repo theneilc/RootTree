@@ -13,48 +13,48 @@ def index(request):
 
 # for site (getting and setting info)
 class ClientUserViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
-	model = ClientUser
+    model = ClientUser
 
 
 # for site (getting and setting info)
 class DeveloperViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
-	model = Developer
+    model = Developer
 
 
 # for client long poll to get sessions
 # get task url on diagram
 class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
-	model = Session
+    model = Session
+    list_serializer_class = SessionListSerializer
+    complete_serializer_class = SessionSerializer
 
-	def list(self, request):
-		# client long poll
-		sessions = self.get_queryset()
-		return super(SessionViewSet, self).list(request)
+    def list(self, request):
+        # client long poll
+        sessions = self.get_queryset()
+        client_uuid = request.QUERY_PARAMS.get('client_uuid')
+        client = Client.objects.get(uuid=client_uuid)
+        # fetch 'Not requested' sessions for client
+        # filter on if reverse relationships are not null
 
-	def retrieve(self, request, pk=None):
-		# dev long poll alice
-		return super(SessionViewSet, self).retrieve(request)
+        sessions_tasks = sessions.filter(client=client, status='N', commandinstance__command_task__isnull=False)
+        sessions_services = sessions.filter(client=client, status='N', commandinstance__command_service__isnull=False)
+        sessions_tasks_serialized = self.list_serializer_class(session_tasks).data
+        sessions_services_serialized = self.list_serializer_class(session_services).data
+        return Response(sessions_tasks_serialized + sessions_services_serialized)
 
-        def create(self, request):
-            # dev execute alice
-            self.serializer_class = SessionWriteSerializer
-            return super(SessionViewSet, self).create(request)
+    def retrieve(self, request, pk=None):
+        # dev long poll alice
+        return super(SessionViewSet, self).retrieve(request)
 
-"""
-accepts the following from the form dict -- 
-'command_id', 'args', 'kwargs' (string representation of dictionary),
-'dev_key', 'client_id'. Checks to see if permissions are okay and if the devs
-are accessing a function they're allowed to (custom command). Generates 
-Session and CommandInstance. Returns session uuid.
+    def create(self, request):
+        # dev execute alice
+        self.serializer_class = SessionWriteSerializer
+        return super(SessionViewSet, self).create(request)
 
-URL (POST): /api/sessions/
-
-VIEW FUNCTION: SessionViewSet.create
-"""
-	@action()
-	def complete(self, request, **kwargs):
-		# client task complete
-		session = Session.objects.get(uuid=kwargs.get('uuid'))
-		session.status = 'C'
-		session.save()
-		return Response()
+    @action()
+    def complete(self, request, **kwargs):
+        # client task complete
+        session = self.get_object()
+        session.status = 'C'
+        session.save()
+        return Response(self.complete_serializer_class(session).data)
