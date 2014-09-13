@@ -24,11 +24,68 @@ import sys
 import os
 from Tkinter import *
 from datetime import datetime
+import random
+import struct
+from Crypto.Cipher import AES
 
 AUTH_ENC_FILE_NAME = 'auth.enc'
 SITE_POLL_URL = ''
+SITE_CONFIRM_URL = ''
 AWSAccessKeyId = 'AKIAJQE2SYERMZG7CL5Q'
 
+def encrypt_file(key, in_contents, out_filename, chunksize=64*1024):
+    """ Encrypts a string using AES (CBC mode) with the given key.
+
+        key:
+            The encryption key - a string that must be either 16, 24 or 32 
+            bytes long. Longer keys are more secure.
+
+        in_contents:
+            String to encrypt and write to file 
+
+        out_filename:
+            File where the encrypted data is written to
+
+        chunksize:
+            Sets the size of the chunk which the function uses to read and 
+            encrypt the file. Larger chunk uses to read and encrypt the file.
+            Larger chunk sizes can be faster for some files and machines.
+            chunksize must be divisible by 16.
+    """
+
+    iv = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+    encryptor = AES.new(key, AES.MODE_CBC, iv)
+    filesize = len(in_contents)
+
+    with open(out_filename, 'wb') as outfile:
+        outfile.write(struct.pack('<Q', filesize))
+        outfile.write(iv)
+
+        chunk = in_contents[:chunksize]
+        if len(chunk) == 0:
+            return 
+        elif len(chunk) % 16 != 0:
+            chunk += ' ' * (16 - len(chunk) % 16)
+
+        outfile.write(encryptor.encrypt(chunk))
+
+
+def decrypt_file(key, in_filename, chunksize=24*1024):
+    """ Decrypts a file using AES (CBC mode) with the given key. Parameters are
+        similar to encrypt_file, with one difference: in_filename is the input
+        file that is to be decrypted. The decrypted string is returned.
+    """
+
+    with open(in_filename, 'rb') as infile:
+        origsize = struct.unpack('<Q', infile.read(struct.calcsize('Q')))[0]
+        iv = infile.read(16)
+        decryptor = AES.new(key, AES.MODE_CBC, iv)
+
+        chunk = infile.read(chunksize)
+        if len(chunk) == 0:
+            return ''
+        return str(decryptor.decrypt(chunk))[:origsize]
+    
 def get_key():
     """ Returns the secret key used in the AES encryption of the files in the
         Encryption module
@@ -39,7 +96,7 @@ def get_key():
 def get_credentials_from_file():
     """ Returns the credentials created by this module's main method in a list
     """
-    decrypted_auth = encrypt.decrypt_file(get_key(), AUTH_ENC_FILE_NAME)
+    decrypted_auth = decrypt_file(get_key(), AUTH_ENC_FILE_NAME)
     return decrypted_auth.split(',')
 
 def getpwd(errorflag=0):
@@ -81,13 +138,7 @@ def auth_main():
     username = credentials[0]
     password = credentials[1]
     
-    #TODO MODIFY
-    while upload.test_credentials(username, password) == 0:
-        credentials = getpwd(1)
-        username = credentials[0]
-        password = credentials[1]
-
-    encrypt.encrypt_file(get_key(), username + ',' + password,
+    encrypt_file(get_key(), username + ',' + password,
                          AUTH_ENC_FILE_NAME)
 
 
@@ -103,11 +154,27 @@ def poll_site(user, password):
 def parse_dicts(string_dict_list_string):
     return ast.literal_eval(string_dict_list_string) 
     
-def thread_handle(ex_dict):
+def thread_handle(ex_dict, username, password):
     if ex_dict['language'] == 'bash':
-        bash_handle(ex_dict)
+        output = bash_handle(ex_dict)
     elif ex_dict['language'] == 'python':
-        python_handle(ex_dict)
+        output = python_handle(ex_dict)
+
+    if ex_dict['file_path'] != True:
+        u_params = upload_file(ex_dict['policy'], ex_dict['signature'],\
+                               ex_dict['uuid'], filepath=ex_dict['file_path'])
+    else:
+        u_params = upload_file(ex_dict['policy'], ex_dict['signature'],\
+                               ex_dict['uuid'], content=output)
+
+    client_confirm(ex_dict['uuid'], u_parms, username, password)
+
+def client_confirm(uuid, param_dict, username, password):
+    v1 = {}
+    v1.update(param_dict)
+    v1['uuid'] = uuid
+    requests.post(SITE_CONFIRM_URL, data=v1, auth=(username, password))
+
 
 def bash_handle(ex_dict):
     code = ex_dict['code']
@@ -175,7 +242,29 @@ def upload_file(policy, signature, uuid, filepath=None, content=None):
 
 
 if __name__ == '__main__':
-    pass
+    # TODO INITIALIZE
+
+    if os.path.isfile(AUTH_ENC_FILE_NAME) != True:
+        auth_main()
+
+    credentials = get_credentials_from_file()
+    username = credentials[0]
+    password = credentials[1]
+    
+
+
+    while True:
+        #TODO get credentials
+        site_polled = poll_site(username, password)
+        
+        command_dicts = parse_dicts(site_polled[1])
+
+        for command_dict in command_dicts:
+            t = Thread(target=thread_handle, args=(command_dict, username,\
+                                                   password ))
+            t.daemon = True
+            t.start()
+
     
 
     
