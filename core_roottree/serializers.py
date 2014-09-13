@@ -16,9 +16,10 @@ class SessionListSerializer(serializers.ModelSerializer):
 	code = serializers.Field(source='commandinstance.command.code')
 	language = serializers.Field(source='commandinstance.command.language')
 	s3_signature = serializers.Field(source='s3_signature')
+	stdin = serializers.Field(source='commandinstance.stdin')
 	class Meta:
 		model = Session
-		fields = ('code', 'language', 'uuid', 's3_signature')
+		fields = ('code', 'language', 'uuid', 's3_signature', 'stdin')
 
 
 class SessionSerializer(serializers.ModelSerializer):
