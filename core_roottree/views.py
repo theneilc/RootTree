@@ -27,6 +27,13 @@ class SessionViewSet(viewsets.ModelViewSet):
 	def list(self, request):
 		# client long poll
 		sessions = self.get_queryset()
+		client_uuid = request.QUERY_PARAMS.get('client_uuid')
+		client = Client.objects.get(uuid=client_uuid)
+		# fetch 'Not requested' sessions for client
+		# filter on if reverse relationships are not null
+
+		sessions_tasks = sessions.filter(client=client, status='N', commandinstance__command_task__isnull=False)
+		sessions_services = sessions.filter(client=client, status='N', commandinstance__command_service__isnull=False)
 
 		return Response()
 

@@ -36,13 +36,13 @@ class Session(TimeStampedModel):
 
 
 class Service(TimeStampedModel):
-    commandinstance = models.OneToOneField('CommandInstance')
+    commandinstance = models.OneToOneField('CommandInstance', related_name='command_service')
     lastrun = models.DateTimeField()
     frequency = models.IntegerField()  # time to wait in seconds
 
 
 class Task(TimeStampedModel):
-    commandinstance = models.OneToOneField('CommandInstance')
+    commandinstance = models.OneToOneField('CommandInstance', related_name='command_task')
 
 
 class CommandInstance(models.Model):
