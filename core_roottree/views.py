@@ -6,14 +6,21 @@ from core_roottree.models import *
 from core_roottree.serializers import *
 from rest_framework.decorators import link, action
 from core_roottree.mixins import UUIDLookupViewSetMixin
+from core_roottree.forms import *
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views.generic.edit import CreateView
+from django.contrib.auth.models import User
 import requests
 
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
+class UserCreateView(CreateView):
+    form_class = UserSignUpForm
+    template_name = 'registration/create_user_form.html'
+    success_url = 'registration/success_login'
 
 # for accessing S3 files through our server
 # abandoned because we're just using public URLs for now

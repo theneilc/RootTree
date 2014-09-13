@@ -23,5 +23,7 @@ urlpatterns = patterns(
     # url(r'^api/file/', views.FileView.as_view()),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/login/$',  login),
-    url(r'^accounts/logout/$', logout)
+    url(r'^accounts/logout/$', logout),
+    url(r'^accounts/register/$', views.UserCreateView.as_view()),
+    url(r'^accounts/success_login/$', login)
 )

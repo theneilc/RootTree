@@ -6,3 +6,5 @@ ipython==2.2.0
 pytz==2014.7
 six==1.8.0
 wsgiref==0.1.2
+requests==2.4.1
+
