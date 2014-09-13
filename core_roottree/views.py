@@ -1,11 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-<<<<<<< HEAD
-from rest_framework import viewsets, status
-from rest_framework import views
-=======
 from rest_framework import viewsets, status, views
->>>>>>> 41cb749e39d6f2c660a5a3c554992d67a9b1366a
 from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
@@ -22,10 +17,15 @@ import requests
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
-class UserCreateView(CreateView):
-    form_class = UserSignUpForm
-    template_name = 'registration/create_user_form.html'
-    success_url = 'registration/success_login'
+class ClientUserCreateView(CreateView):
+    form_class = ClientUserSignUpForm
+    template_name = 'registration/create_clientuser_form.html'
+    success_url = 'registration/success_login/clientuser'
+
+class DevCreateView(CreateView):
+    form_class = DevSignUpForm
+    template_name = 'registration/create_dev_form.html'
+    success_url = 'registration/success_login/dev'
 
 # for accessing S3 files through our server
 # abandoned because we're just using public URLs for now
