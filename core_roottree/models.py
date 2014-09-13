@@ -28,27 +28,26 @@ class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
-
+    company = models.CharField(max_length=100, default=''
+)
 
 class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     client = models.ForeignKey(ClientUser)
     developer = models.ForeignKey(Developer)
-
     STATUS_CHOICES = (
         (u'N', u'Not Requested'),
         (u'P', u'Pending'),
         (u'C', u'Completed'),
     )
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
-    result = models.TextField(null=True, blank=True)
-    # file_url, null=True
-    # result_url, null=False
+    file_url = models.TextField(null=True, blank=True)
+    result_url = models.TextField(null=True, blank=True)
     callback_url = models.URLField(null=True, blank=True)
     commandinstance = models.ForeignKey('CommandInstance')
 
     def get_local_file_url(self, request=None):
-        path = '/api/file/?s=%s' %s self.uuid
+        path = '/api/file/?s=%s' % self.uuid
         return build_absolute_uri(path, request)
 
     def get_result(self, request=None):
