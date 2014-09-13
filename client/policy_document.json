@@ -1,0 +1,7 @@
+{"expiration": "2015-01-01T00:00:00Z",
+  "conditions": [ 
+    {"bucket": "roottreebucket"}, 
+    ["starts-with", "$key", ""],
+    {"acl": "authenticated-read"},
+  ]
+}
