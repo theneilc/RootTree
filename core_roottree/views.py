@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView, ModelViewset
 from rest_framework.response import Response
 from core_roottree.models import *
+from core_roottree.serializers import *
 from rest_framework.decorators import link, action
 
 # Create your views here.
@@ -25,6 +26,8 @@ class SessionViewSet(viewsets.ModelViewSet):
 
 	def list(self, request):
 		# client long poll
+		sessions = self.get_queryset()
+
 		return Response()
 
 	def retrieve(self, request, pk=None):
@@ -38,4 +41,7 @@ class SessionViewSet(viewsets.ModelViewSet):
 	@action()
 	def complete(self, request, **kwargs):
 		# client task complete
+		session = Session.objects.get(uuid=kwargs.get('uuid'))
+		session.status = 'C'
+		session.save()
 		return Response()
