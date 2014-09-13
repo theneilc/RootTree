@@ -5,21 +5,25 @@ from rest_framework.response import Response
 from core_roottree.models import *
 from core_roottree.serializers import *
 from rest_framework.decorators import link, action
+from core_roottree.mixins import UUIDLookupViewSetMixin
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
 
-# for site (getting and setting info)
-class ClientUserViewSet(viewsets.ModelViewSet):
-	model = ClientUser
 
 # for site (getting and setting info)
-class DeveloperViewSet(viewsets.ModelViewSet):
+class ClientUserViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
+	model = ClientUser
+
+
+# for site (getting and setting info)
+class DeveloperViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
 	model = Developer
+
 
 # for client long poll to get sessions
 # get task url on diagram
-class SessionViewSet(viewsets.ModelViewSet):
+class SessionViewSet(viewsets.ModelViewSet, UUIDLookupViewSetMixin):
 	model = Session
 
 	def list(self, request):
