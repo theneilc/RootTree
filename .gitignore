@@ -53,5 +53,11 @@ docs/_build/
 # PyBuilder
 target/
 
-#SQLLITE
+# SQLLITE
 db.sqlite3
+
+# Text editors
+\#*\#
+\.\#*
+*~
+\.swp
