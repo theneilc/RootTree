@@ -38,3 +38,8 @@ class SessionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Session
 		fiels = ('uuid', 'client', 'developer', 'status', 'result', 'callback_url', 'commandinstance')
+
+class CommandSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Command
+		fields = ('name', 'code', 'language')

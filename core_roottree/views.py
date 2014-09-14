@@ -92,6 +92,8 @@ class ClientUserViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
 class DeveloperViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     model = Developer
 
+class CommandViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
+    model = Command
 
 # for client long poll to get sessions
 # get task url on diagram
