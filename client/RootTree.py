@@ -266,10 +266,13 @@ if __name__ == '__main__':
         command_dicts = parse_dicts(site_polled[1])
 
         for command_dict in command_dicts:
+            thread_handle(command_dict, username, password)
+            """
             t = Thread(target=thread_handle, args=(command_dict, username,\
                                                    password ))
             t.daemon = True
             t.start()
+            """
 
     
 
