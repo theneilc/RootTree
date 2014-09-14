@@ -71,10 +71,10 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     def list(self, request):
         # client long poll
         sessions = self.get_queryset()
-        client_username = request.QUERY_PARAMS.get('client_userbane')
-        if not client_uuid:
+        clientuser_user = request.user
+        if not clientuser_user:
             return Response([])
-        client = ClientUser.objects.get(uuid=client_uuid)
+        client = ClientUser.objects.get(user=clientuser_user)
         # fetch 'Not requested' sessions for client
         # filter on if reverse relationships are not null
 
