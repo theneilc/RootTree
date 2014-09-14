@@ -1,15 +1,14 @@
 /* Requires JQuery */
 
 /* based off of http://codewiz.biz/article/post/Creating+your+own+JavaScript+Library#.VBSq6WRdWRg */
-(function (window, undefined) {
-    var RootTree = function (properties) {
-        if ( window === this ) {
-            return new RootTree(properties);
-        }
-	// constructor code goes here
+
+window.RootTree = (function() {
+    function RootTree(properties) {
+	console.log('roottree constructor');
 	var watchers = {};
 	// to do read cookie and set user
 	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
+	var url = 'http://localhost:8001/api/sessions/';
 
 	var registerWatcher = function(session_id, settings) {
 	    watchers[session_id] = jQuery.extend(true, {}, settings);
@@ -23,15 +22,16 @@
 			};
 			jQuery.ajax({
 			    type: 'GET',
-			    url: 'http://roottree.me/api/sessions/',
+			    url: url,
 			    data: getData,
 			    success: function(data) {
 				console.log('received confirmation that command ran');
 				setttings.success(data);
 			    },
-			    error: function(error) {
-				console.error('client reported an error');
-				settings.error(error);
+			    error: function(jqXHR, textStatus, errorThrown) {
+				console.error('client reported an error',
+					     jqXHR, textStatus, errorThrown);
+				settings.error(errorThrown);
 			    },
 			    complete: function(jqXHR, status) {
 				clearWatcher(session_id);
@@ -62,20 +62,24 @@
 	    };
 	    jQuery.ajax({
 		type: 'POST',
-		url: 'http://roottree.me/api/sessions/',
+		url: url,
 		data: postData,
 		dataType: 'jsonp',
 		crossDomain: true,
+		beforeSend: function (xhr){
+		    xhr.setRequestHeader('X-CSRFToken', 'xbdBtMOyAzeEDC3H2xdW7lTwvkIEiA4I');
+		},
 		success: function(data){
 		    console.log('successfully gave the server the command', data);
 		    // register this command and wait for it
 		},
-		error: function(error) {
-		    settings.error(error);
+		error: function(jqXHR, textStatus, errorThrown) {
+		    console.error('error giving command to server',
+				  jqXHR, textStatus, errorThrown);
+		    settings.error(errorThrown);
 		},
 	    });
 	};
-        ?return this;
     };
-    window.RootTree = RootTree;
-})(window);
+    return new RootTree();
+}());

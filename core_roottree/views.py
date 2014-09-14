@@ -99,7 +99,7 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     list_serializer_class = SessionListSerializer
     complete_serializer_class = SessionSerializer
     create_serializer_class = SessionWriteSerializer
-
+    
     def list(self, request):
         
         # client long poll
@@ -111,10 +111,11 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         # fetch 'Not requested' sessions for client
         # filter on if reverse relationships are not null
 
-        sessions_tasks = sessions.filter(client=client, status='N', commandinstance__command_task__isnull=False)
-        sessions_services = sessions.filter(client=client, status='N', commandinstance__command_service__isnull=False)
-        sessions_tasks_serialized = self.list_serializer_class(session_tasks).data
-        sessions_services_serialized = self.list_serializer_class(session_services).data
+        sessions_tasks = sessions.filter(client=client, status='P', commandinstance__command_task__isnull=False)
+        sessions_services = sessions.filter(client=client, status='P', commandinstance__command_service__isnull=False)
+        sessions_tasks_serialized = self.list_serializer_class(sessions_tasks, many=True).data
+        sessions_services_serialized = self.list_serializer_class(sessions_services, many=True).data
+
         return Response(sessions_tasks_serialized + sessions_services_serialized)
         
     def retrieve(self, request, **kwargs):
