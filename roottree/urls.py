@@ -22,9 +22,10 @@ urlpatterns = patterns(
     url(r'^api/', include(router.urls)),
     # url(r'^api/file/', views.FileView.as_view()),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/login/$',  login),
+    url(r'^accounts/login/clientuser/$',  login, {'template_name':'registration/clientuser_login.html'}),
+    url(r'^accounts/login/dev/$',  login, {'template_name':'registration/dev_login.html'}),
     url(r'^accounts/logout/$', logout),
     url(r'^accounts/register/dev/$', views.DevCreateView.as_view()),
     url(r'^accounts/register/clientuser/$', views.ClientUserCreateView.as_view()),
-    url(r'^accounts/success_login/$', login)
+    url(r'^accounts/success/$', TemplateView.as_view(template_name='registration/success.html'))
 )
