@@ -50,7 +50,7 @@ window.RootTree = (function() {
 	};
 
 	var popupIframe = function() {
-		$('.roottree_iframe_container').bPopup({
+		$('#shit').bPopup({
             content:'iframe', //'ajax', 'iframe' or 'image'
             contentContainer:'.content',
             loadUrl:'http://127.0.0.1:8000/accounts/login/clientuser/?next=/accounts/setcookie/cross_domain/' //Uses jQuery.load()
@@ -59,59 +59,48 @@ window.RootTree = (function() {
 
 	this.init = function(dev_key){
 	    this._developer = dev_key;
-		
-	};
-
-	this.run = function(command, settings){
-		
-		window.addEventListener("message", receiveMessage, false);
+	    console.log('are we here')
+	    window.addEventListener("message", receiveMessage, false);
 
 		function receiveMessage(event)
 		{
-			console.log('uuid', event.data['uuid'])
-		    // this._client = event.data['uuid'];
-		    document.cookie="uuid="+event.data['uuid'];
-		    $('.roottree_iframe_container').bPopup().close();
-		    finishRun();
+		  
+		    console.log('uuid', event.data);
+
+		  // ...
 		}
 	    // for now developer uuid and dev key are the same.
-
-	    // add document.cookie uuid check
-	    // if document.cookie finishRun()
-	    // else
 	    popupIframe();
+	};
 
-	    function finishRun() {
-	    	//set this._client from cookie
-	    	var postData = {
-			args: settings.args,
-			kwargs: settings.kwargs,
-			client: this._client,
-			developer: this._developer
-		    };
+	this.run = function(command, settings){
+	    var postData = {
+		args: settings.args,
+		kwargs: settings.kwargs,
+		client: this._client,
+		developer: this._developer
+	    };
 
 
-		    jQuery.ajax({
-			type: 'POST',
-			url: url,
-			data: postData,
-			dataType: 'json',
-			crossDomain: true,
-			beforeSend: function (xhr){
-			    xhr.setRequestHeader('X-CSRFToken', 'xbdBtMOyAzeEDC3H2xdW7lTwvkIEiA4I');
-			},
-			success: function(data){
-			    console.log('successfully gave the server the command', data);
-			    // register this command and wait for it
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-			    console.error('error giving command to server',
-					  jqXHR, textStatus, errorThrown);
-			    settings.error(errorThrown);
-			},
-		    });
-	    }
-	    
+	    jQuery.ajax({
+		type: 'POST',
+		url: url,
+		data: postData,
+		dataType: 'json',
+		crossDomain: true,
+		beforeSend: function (xhr){
+		    xhr.setRequestHeader('X-CSRFToken', 'xbdBtMOyAzeEDC3H2xdW7lTwvkIEiA4I');
+		},
+		success: function(data){
+		    console.log('successfully gave the server the command', data);
+		    // register this command and wait for it
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		    console.error('error giving command to server',
+				  jqXHR, textStatus, errorThrown);
+		    settings.error(errorThrown);
+		},
+	    });
 	};
     };
     return new RootTree();

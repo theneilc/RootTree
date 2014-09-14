@@ -34,20 +34,38 @@ class DeleteCookieView(TemplateView):
         response.delete_cookie('clientuser_uuid')
         return response
 
+class SetCookieViewDomain(TemplateView):
+    template_name = 'registration/settingcookie.html'
+
+    def get(self, request, *args, **kwargs):
+        print "fuck you domain"
+        print "request.GET", request.GET
+        uuid = request.user.related_clientuser.uuid
+        url = '/?uuid='+uuid
+        response = HttpResponseRedirect(url)
+        if not request.user.is_anonymous():
+            if request.user.related_clientuser:
+                response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+                response["P3P"] = 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"'
+
+        return response
 
 class SetCookieView(TemplateView):
     template_name = 'registration/settingcookie.html'
 
     def get(self, request, *args, **kwargs):
         print "fuck you dude"
+        print "request.GET", request.GET
         response = HttpResponseRedirect('/')
         if not request.user.is_anonymous():
             if request.user.related_clientuser:
                 response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+                response["P3P"] = 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"'
+
         return response
 
 def index(request):
-    return HttpResponse("Hello, world. This is roottree")
+    return SimpleTemplateResponse(template='js/example.html')
 
 class ClientUserCreateView(CreateView):
     form_class = ClientUserSignUpForm
