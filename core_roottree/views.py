@@ -15,6 +15,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 import requests
 
+
 class SignUpSuccessView(TemplateView):
     template_name = 'registration/success.html'
 
@@ -100,13 +101,27 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     complete_serializer_class = SessionSerializer
     create_serializer_class = SessionWriteSerializer
 
-    def options(self, request, *args, **kwargs):
-        response = super(SessionViewSet, self).options(request, *args, **kwargs)
+    def allow_cross_domain(self, response):
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
-        response["Access-Control-Allow-Headers"] = "*"
+        response["Access-Control-Allow-Headers"] = "X-CSRFToken"
         return response
+
+    def get_permissions(self):
+        ret = super(SessionViewSet, self).get_permissions()
+        print 'permissions', ret
+        print 'method', self.request.method
+        if self.request.method == 'OPTIONS' or self.request.method == 'POST':
+            # temporary
+            return []
+        else:
+            return ret
+
+    def options(self, request, *args, **kwargs):
+        return self.allow_cross_domain(
+            super(SessionViewSet, self).options(request, *args, **kwargs)
+        )
 
     def list(self, request):
         # client long poll
@@ -135,12 +150,6 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
 
     def create(self, request):
         # dev execute alice
-        headers = {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-            "Access-Control-Max-Age": "1000",
-            "Access-Control-Allow-Headers": "*"
-        }
         try:
             command_name = request.DATA['command']
             args = request.DATA.get('args', '')
@@ -158,23 +167,23 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
                 self.pre_save(serializer.object)
                 self.object = serializer.save(force_insert=True)
                 self.post_save(self.object, created=True)
-                success_headers = self.get_success_headers(serializer.data)
-                # really really open access control settings to start
-                headers = headers.update(success_headers)
-                return Response(self.object.uuid, status=status.HTTP_201_CREATED,
-                                headers=headers)
+                headers = self.get_success_headers(serializer.data)
+                return self.allow_cross_domain(
+                    Response(self.object.uuid, status=status.HTTP_201_CREATED,
+                             headers=headers))
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST,
-                            headers=headers)
+            return self.allow_cross_domain(
+                Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST))
+
         except (KeyError, MultiValueDictKeyError) as e:
             print_exc()
-            return Response("Missing key %s." % e.message,
-                            status=status.HTTP_400_BAD_REQUEST,
-                            headers=headers)
+            return self.allow_cross_domain(
+                Response("Missing key %s." % e.message,
+                         status=status.HTTP_400_BAD_REQUEST))
         except:
             print_exc()
-            return Response('', status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            headers=headers)
+            return self.allow_cross_domain(
+                Response('', status=status.HTTP_500_INTERNAL_SERVER_ERROR))
 
     @action()
     def complete(self, request, **kwargs):

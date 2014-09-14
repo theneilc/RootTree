@@ -48,6 +48,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'roottree.middleware.ProcessExceptionMiddleware'
 )
 
 ROOT_URLCONF = 'roottree.urls'
@@ -88,16 +89,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-# Rest Framework Settings
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
-
 # Template Dirs
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
@@ -109,3 +100,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+# logging
+"""import logging.config
+
+logging.config.fileConfig('logging.conf')
+"""
