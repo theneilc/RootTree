@@ -25,7 +25,9 @@ urlpatterns = patterns(
     url(r'^accounts/login/clientuser/$',  login, {'template_name':'registration/clientuser_login.html'}),
     url(r'^accounts/login/dev/$',  login, {'template_name':'registration/dev_login.html'}),
     url(r'^accounts/logout/$', logout),
+    url(r'^accounts/delete_cookie/$', views.DeleteCookieView.as_view()),
     url(r'^accounts/register/dev/$', views.DevCreateView.as_view()),
     url(r'^accounts/register/clientuser/$', views.ClientUserCreateView.as_view()),
-    url(r'^accounts/success/$', TemplateView.as_view(template_name='registration/success.html'))
+    url(r'^accounts/set_cookie/$', views.SetCookieView.as_view()),
+    url(r'^accounts/success/$', views.SignUpSuccessView.as_view())
 )
