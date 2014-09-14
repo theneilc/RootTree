@@ -14,6 +14,11 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="/accounts/logout/">Logout</a>
+                </li>
+                {% else %}
                 <li class="hidden active">
                     <a href="#page-top"></a>
                 </li>
@@ -29,6 +34,8 @@
                 <li>
                     <a href="/accounts/login/clientuser/?next=/clientuser/">For Users</a>
                 </li>
+
+                {% endif %}
             </ul>
         </div>
         <!-- /.navbar-collapse -->

@@ -71,7 +71,7 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     def list(self, request):
         # client long poll
         sessions = self.get_queryset()
-        client_uuid = request.QUERY_PARAMS.get('client_uuid')
+        client_username = request.QUERY_PARAMS.get('client_userbane')
         if not client_uuid:
             return Response([])
         client = ClientUser.objects.get(uuid=client_uuid)
