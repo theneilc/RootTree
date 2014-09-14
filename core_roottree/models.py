@@ -24,7 +24,7 @@ class CustomClientUserManager(models.Manager):
 class ClientUser(UserModelMixin, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     # email = models.EmailField(unique=True, max_length=254)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name="related_clientuser")
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
     objects = CustomClientUserManager()
 
