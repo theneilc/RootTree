@@ -18,7 +18,7 @@ window.RootTree = (function() {
 	// to do read cookie and set user
 	
 	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
-	var url = 'http://localhost:8001/api/sessions/';
+	var url = 'http://www.roottree.me/api/sessions/';
 
 	var getCookie = function(cname) {
 	    var name = cname + "=";
@@ -74,7 +74,7 @@ window.RootTree = (function() {
 		$('.roottree_iframe_container').bPopup({
             content:'iframe', //'ajax', 'iframe' or 'image'
             contentContainer:'.content',
-            loadUrl:'http://127.0.0.1:8000/accounts/login/clientuser/?next=/accounts/setcookie/cross_domain/' //Uses jQuery.load()
+            loadUrl:'http://www.roottree.me/accounts/login/clientuser/?next=/accounts/setcookie/cross_domain/' //Uses jQuery.load()
         });
 	}
 

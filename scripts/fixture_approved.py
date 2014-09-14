@@ -6,16 +6,16 @@ for i in Command.objects.all():
 	i.delete()
 
 commands = {
-	'Install grunt': ["""osascript -e 'display notification "We will let you know when this is done" with title "Installing Grunt!"'; npm install -g grunt-cli; osascript -e 'display notification "Huzzah" with title "Done installing Grunt!"'""",'b'],
-	'Install pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py', 'b'],
-	'Install brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
-	'Install npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
-	'Install node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
-	'Install clumsy-bird': ['git clone https://github.com/ellisonleao/clumsy-bird; cd clumsy-bird; npm install; (grunt connect&); sleep 2; open http://localhost:8001/;', 'b'],
-	'Install ino': ['pip install ino', 'b'],
-	'Upload arduino sketch': ['mkdir tutorial_1;cd tutorial_1; ino init; echo "%s"> sketch.ino; ino build; ino upload; osascript -e "Sketch uploaded!" with title "Complete!"','b'],
-	'Notify desktop': ['osascript -e \'display notification \"%s\" with title \"%s\"\'', 'b'],
-	'Setup Django project':['virtual project_root; cd project_root; git clone %s; cd','b']
+	'install_grunt': ["""osascript -e 'display notification "We will let you know when this is done" with title "Installing Grunt!"'; npm install -g grunt-cli; osascript -e 'display notification "Huzzah" with title "Done installing Grunt!"'""",'b'],
+	'install_pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py', 'b'],
+	'install_brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
+	'install_npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
+	'install_node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
+	'install_clumsybird': ['git clone https://github.com/ellisonleao/clumsy-bird; cd clumsy-bird; npm install; (grunt connect&); sleep 2; open http://localhost:8001/;', 'b'],
+	'install_ino': ['pip install ino', 'b'],
+	'upload_arduino': ['mkdir tutorial_1;cd tutorial_1; ino init; echo "%s"> sketch.ino; ino build; ino upload; osascript -e "Sketch uploaded!" with title "Complete!"','b'],
+	'notify_desktop': ['osascript -e \'display notification \"%s\" with title \"%s\"\'', 'b'],
+	'setup_django_project':['virtual project_root; cd project_root; git clone %s; cd','b']
 }
 
 for key,val in commands.iteritems():
