@@ -29,8 +29,8 @@ import struct
 from Crypto.Cipher import AES
 
 AUTH_ENC_FILE_NAME = 'auth.enc'
-SITE_POLL_URL = ''
-SITE_CONFIRM_URL = ''
+SITE_POLL_URL = 'http://www.roottree.me/api/sessions/'
+SITE_CONFIRM_URL = 'http://www.roottree.me/api/sessions/'
 AWSAccessKeyId = 'AKIAISF6Q3NMVEHU2EOA'
 
 def encrypt_file(key, in_contents, out_filename, chunksize=64*1024):
@@ -155,25 +155,25 @@ def parse_dicts(string_dict_list_string):
     return ast.literal_eval(string_dict_list_string) 
     
 def thread_handle(ex_dict, username, password):
-    if ex_dict['language'] == 'bash':
+    if ex_dict['language'] == 'b':
         output = bash_handle(ex_dict)
-    elif ex_dict['language'] == 'python':
+    elif ex_dict['language'] == 'p':
         output = python_handle(ex_dict)
 
-    if ex_dict['file_path'] != True:
-        u_params = upload_file(ex_dict['policy'], ex_dict['signature'],\
+    if ex_dict.get('file_path', None) != None:
+        u_params = upload_file(ex_dict['s3_signature'][0], ex_dict['s3_signature'][1],\
                                ex_dict['uuid'], filepath=ex_dict['file_path'])
     else:
-        u_params = upload_file(ex_dict['policy'], ex_dict['signature'],\
+        u_params = upload_file(ex_dict['s3_signature'][0], ex_dict['s3_signature'][1],\
                                ex_dict['uuid'], content=output)
 
-    client_confirm(ex_dict['uuid'], u_parms, username, password)
+    client_confirm(ex_dict['uuid'], u_params, username, password)
 
 def client_confirm(uuid, param_dict, username, password):
     v1 = {}
     v1.update(param_dict)
     v1['uuid'] = uuid
-    requests.post(SITE_CONFIRM_URL, data=v1, auth=(username, password))
+    return requests.post(SITE_CONFIRM_URL + uuid + '/complete/', data=v1, auth=(username, password))
 
 
 def bash_handle(ex_dict):
@@ -184,6 +184,7 @@ def bash_handle(ex_dict):
     stdinput =  ex_dict.get('stdin', '')
     p = subprocess.Popen(code, stdout=subprocess.PIPE, stdin=subprocess.PIPE,\
                          shell=True)
+    p.wait()
     out, err = p.communicate(input=stdinput)
     return (out, err)[0] #TODO Might remove the index
 
@@ -242,6 +243,12 @@ def upload_file(policy, signature, uuid, filepath=None, content=None):
         files = {'file': metafile}
         r = requests.post(url, data=payload, files=files)
         metafile.close()
+        print policy
+        print '*******'
+        print signature
+        print r.text
+        print '*******'
+        print r.headers
         url_list['result_url'] = r.headers['location']
     
     return url_list
@@ -260,7 +267,7 @@ if __name__ == '__main__':
 
 
     while True:
-        #TODO get credentials
+    #TODO indent
         site_polled = poll_site(username, password)
         
         command_dicts = parse_dicts(site_polled[1])

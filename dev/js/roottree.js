@@ -2,19 +2,26 @@
 
 /* based off of http://codewiz.biz/article/post/Creating+your+own+JavaScript+Library#.VBSq6WRdWRg */
 
+// for debug
+function stop() {
+    for (k in RootTree.watchers)
+	clearInterval(RootTree.watchers[k].timer)
+};
+
 window.RootTree = (function() {
     function RootTree(properties) {
 	console.log('roottree constructor');
 	var watchers = {};
+	this.watchers = watchers; // for debug
 	// to do read cookie and set user
 	
 	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
 	var url = 'http://localhost:8001/api/sessions/';
 
-	var registerWatcher = function(session_id, settings) {
-	    watchers[session_id] = jQuery.extend(true, {}, settings);
-	    watchers[session_id].timer = window.setInterval(
-		function(session_id, settings) {
+	var registerWatcher = function(sessionId, settings) {
+	    watchers[sessionId] = jQuery.extend(true, {}, settings);
+	    watchers[sessionId].timer = window.setInterval(
+		function(sessionId, settings) {
 		    return function() {
 			// poll the server
 			var getData = {
@@ -23,30 +30,31 @@ window.RootTree = (function() {
 			};
 			jQuery.ajax({
 			    type: 'GET',
-			    url: url,
+			    url: url + sessionId + '/',
 			    data: getData,
 			    success: function(data) {
-				console.log('received confirmation that command ran');
-				setttings.success(data);
+				console.log('client responded successfully', data);
+				if (data != 'pending') {
+				    settings.success(data);
+				    clearWatcher(sessionId);
+				}
 			    },
 			    error: function(jqXHR, textStatus, errorThrown) {
 				console.error('client reported an error',
 					     jqXHR, textStatus, errorThrown);
 				settings.error(errorThrown);
-			    },
-			    complete: function(jqXHR, status) {
-				clearWatcher(session_id);
+				clearWatcher(sessionId);
 			    },
 			    dataType: 'json',
 			    crossDomain: true
 			});
 		    }
-		}(session_id, settings), 100);
+		}(sessionId, settings), 1000);
 	};
 
-	var clearWatcher = function(session_id) {
-	    window.clearInterval(watchers[session_id].timer);
-	    delete watchers[session_id];
+	var clearWatcher = function(sessionId) {
+	    window.clearInterval(watchers[sessionId].timer);
+	    delete watchers[sessionId];
 	};
 
 	var popupIframe = function() {
@@ -84,13 +92,12 @@ window.RootTree = (function() {
 	    function finishRun() {
 	    	//set this._client from cookie
 	    	var postData = {
+			command: command,
 			args: settings.args,
 			kwargs: settings.kwargs,
 			client: this._client,
 			developer: this._developer
 		    };
-
-
 		    jQuery.ajax({
 			type: 'POST',
 			url: url,
@@ -100,10 +107,13 @@ window.RootTree = (function() {
 			beforeSend: function (xhr){
 			    xhr.setRequestHeader('X-CSRFToken', 'xbdBtMOyAzeEDC3H2xdW7lTwvkIEiA4I');
 			},
-			success: function(data){
-			    console.log('successfully gave the server the command', data);
-			    // register this command and wait for it
-			},
+			success: function(settings) {
+			    return function(data){
+				console.log('successfully gave the server the command', data);
+				var sessionId = data;
+				registerWatcher(sessionId, settings);
+			    }
+			}(settings),
 			error: function(jqXHR, textStatus, errorThrown) {
 			    console.error('error giving command to server',
 					  jqXHR, textStatus, errorThrown);
@@ -112,6 +122,7 @@ window.RootTree = (function() {
 		    });
 	    }
 	    
+
 	};
     };
     return new RootTree();
