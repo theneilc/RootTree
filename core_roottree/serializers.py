@@ -18,6 +18,13 @@ class SessionListSerializer(serializers.ModelSerializer):
 	s3_signature = serializers.Field(source='s3_signature')
 	stdin = serializers.Field(source='commandinstance.stdin')
 	upload_file = serializers.Field(source='commandinstance.command.upload_file')
+	args = serializers.Field(source='commandinstance.args')
+
+	# def get_code_with_args(self, obj)
+	# 	if obj.commandinstance.args:
+			
+	# 		code = serializers.Field(source='commandinstance.command.code')
+
 	class Meta:
 		model = Session
 		fields = ('code', 'language', 'uuid', 's3_signature', 'stdin', 'upload_file')
