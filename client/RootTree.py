@@ -184,6 +184,7 @@ def bash_handle(ex_dict):
     stdinput =  ex_dict.get('stdin', '')
     p = subprocess.Popen(code, stdout=subprocess.PIPE, stdin=subprocess.PIPE,\
                          shell=True)
+    p.wait()
     out, err = p.communicate(input=stdinput)
     return (out, err)[0] #TODO Might remove the index
 
@@ -266,7 +267,7 @@ if __name__ == '__main__':
 
 
     while True:
-        #TODO get credentials
+    #TODO indent
         site_polled = poll_site(username, password)
         
         command_dicts = parse_dicts(site_polled[1])
