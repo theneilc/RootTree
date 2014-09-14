@@ -95,11 +95,12 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     def create(self, request):
         # dev execute alice
         try:
-            command_id = request.DATA['command']
+            command_name = request.DATA['command']
             args = request.DATA.get('args', '')
             kwargs = request.DATA.get('kwargs', '')
+            command = Command.objects.get(name=command_name)
             commandinstance = CommandInstance.objects.create(
-                command_id=command_id,
+                command=command,
                 args=args,
                 kwargs=kwargs
             )
