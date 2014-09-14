@@ -12,7 +12,9 @@
               {% if form.errors %}
               <p>Your username and password didn't match. Please try again.</p>
               {% endif %}
-              <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+             
+              <form action="/accounts/login/clientuser/?next=/accounts/set_cookie/" method="post" >
+              
               {% csrf_token %}
               <div class="row">
                 <div class="fieldWrapper">
@@ -31,7 +33,7 @@
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                         Log in</button>
               </div>
-              <input type="hidden" name="next" value="/" />
+              
               </form>
               <div class="row">
                 <a href="/accounts/register/clientuser" class="text-center new-account">Create an account </a>

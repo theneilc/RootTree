@@ -36,7 +36,7 @@ window.RootTree = (function() {
 			    complete: function(jqXHR, status) {
 				clearWatcher(session_id);
 			    },
-			    dataType: 'jsonp',
+			    dataType: 'json',
 			    crossDomain: true
 			});
 		    }
@@ -64,7 +64,7 @@ window.RootTree = (function() {
 		type: 'POST',
 		url: url,
 		data: postData,
-		dataType: 'jsonp',
+		dataType: 'json',
 		crossDomain: true,
 		beforeSend: function (xhr){
 		    xhr.setRequestHeader('X-CSRFToken', 'xbdBtMOyAzeEDC3H2xdW7lTwvkIEiA4I');

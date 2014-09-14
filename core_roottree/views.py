@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template.response import SimpleTemplateResponse
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 from core_roottree.models import *
@@ -10,9 +11,40 @@ from core_roottree.forms import *
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 import requests
 
+class SignUpSuccessView(TemplateView):
+    template_name = 'registration/success.html'
+
+    def get(self, request, *args, **kwargs):
+        # response = SimpleTemplateResponse(template=self.template_name)
+        # if not request.user.is_anonymous():
+        #     if request.user.related_clientuser:
+        #         response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+        # return response
+        return super(SignUpSuccessView, self).get(request, *args, **kwargs)
+
+class DeleteCookieView(TemplateView):
+    template_name = 'registration/logged_out.html'
+
+    def get(self, request, *args, **kwargs):
+        response = SimpleTemplateResponse(template=self.template_name)
+        response.delete_cookie('clientuser_uuid')
+        return response
+
+
+class SetCookieView(TemplateView):
+    template_name = 'registration/settingcookie.html'
+
+    def get(self, request, *args, **kwargs):
+        print "fuck you dude"
+        response = HttpResponseRedirect('/')
+        if not request.user.is_anonymous():
+            if request.user.related_clientuser:
+                response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+        return response
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
@@ -67,9 +99,16 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     list_serializer_class = SessionListSerializer
     complete_serializer_class = SessionSerializer
     create_serializer_class = SessionWriteSerializer
-    
+
+    def options(self, request, *args, **kwargs):
+        response = super(SessionViewSet, self).options(request, *args, **kwargs)
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
+
     def list(self, request):
-        
         # client long poll
         sessions = self.get_queryset()
         clientuser_user = request.user
@@ -85,7 +124,7 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         sessions_services_serialized = self.list_serializer_class(sessions_services, many=True).data
 
         return Response(sessions_tasks_serialized + sessions_services_serialized)
-        
+
     def retrieve(self, request, **kwargs):
         # dev long poll alice
         session = self.get_object()
@@ -96,6 +135,12 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
 
     def create(self, request):
         # dev execute alice
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            "Access-Control-Max-Age": "1000",
+            "Access-Control-Allow-Headers": "*"
+        }
         try:
             command_name = request.DATA['command']
             args = request.DATA.get('args', '')
@@ -113,18 +158,23 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
                 self.pre_save(serializer.object)
                 self.object = serializer.save(force_insert=True)
                 self.post_save(self.object, created=True)
-                headers = self.get_success_headers(serializer.data)
+                success_headers = self.get_success_headers(serializer.data)
+                # really really open access control settings to start
+                headers = headers.update(success_headers)
                 return Response(self.object.uuid, status=status.HTTP_201_CREATED,
                                 headers=headers)
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST,
+                            headers=headers)
         except (KeyError, MultiValueDictKeyError) as e:
             print_exc()
             return Response("Missing key %s." % e.message,
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST,
+                            headers=headers)
         except:
             print_exc()
-            return Response('', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response('', status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            headers=headers)
 
     @action()
     def complete(self, request, **kwargs):
