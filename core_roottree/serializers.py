@@ -13,7 +13,7 @@ class SessionWriteSerializer(serializers.ModelSerializer):
 
 
 class SessionListSerializer(serializers.ModelSerializer):
-	code = serializers.SerializerMethodField('get_code_with_args')
+	code = serializers.Field(source='commandinstance.command.code')
 	language = serializers.Field(source='commandinstance.command.language')
 	s3_signature = serializers.Field(source='s3_signature')
 	stdin = serializers.Field(source='commandinstance.stdin')
