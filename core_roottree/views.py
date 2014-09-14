@@ -67,7 +67,7 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     list_serializer_class = SessionListSerializer
     complete_serializer_class = SessionSerializer
     create_serializer_class = SessionWriteSerializer
-
+    
     def list(self, request):
         # client long poll
         sessions = self.get_queryset()
