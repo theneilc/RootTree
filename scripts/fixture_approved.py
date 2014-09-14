@@ -7,7 +7,7 @@ for i in Command.objects.all():
 
 commands = {
 	'install_grunt': ["""osascript -e 'display notification "We will let you know when this is done" with title "Installing Grunt!"'; npm install -g grunt-cli; osascript -e 'display notification "Huzzah" with title "Done installing Grunt!"'""",'b'],
-	'install_pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py', 'b'],
+	'install_pip': ["""curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py;osascript -e 'display notification "Pip is installed." with title "Successful!"'""", 'b'],
 	'install_brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
 	'install_npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
 	'install_node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
@@ -36,3 +36,4 @@ s1.client = ClientUser.objects.all()[0]
 s1.status = 'P'
 s1.commandinstance = ci1
 s1.save()
+
