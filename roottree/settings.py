@@ -48,6 +48,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ProcessExceptionMiddleware'
 )
 
 ROOT_URLCONF = 'roottree.urls'
@@ -109,3 +110,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+# logging
+"""import logging.config
+
+logging.config.fileConfig('logging.conf')
+"""
