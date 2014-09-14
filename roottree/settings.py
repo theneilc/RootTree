@@ -103,3 +103,9 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 # Other custom stuff
 ABSOLUTE_URL_ROOT = 'http://roottree.me'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
