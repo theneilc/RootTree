@@ -4,7 +4,7 @@ from rest_framework import routers
 from django.views.generic import TemplateView
 from core_roottree import views
 from django.contrib.auth.views import login, logout
-
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 router = routers.DefaultRouter()
 router.register(r'sessions', views.SessionViewSet)
@@ -22,7 +22,7 @@ urlpatterns = patterns(
     url(r'^api/', include(router.urls)),
     # url(r'^api/file/', views.FileView.as_view()),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/login/clientuser/$',  login, {'template_name':'registration/clientuser_login.html'}),
+    url(r'^accounts/login/clientuser/$',  xframe_options_exempt(login), {'template_name':'registration/clientuser_login.html'}),
     url(r'^accounts/login/dev/$',  login, {'template_name':'registration/dev_login.html'}),
     url(r'^accounts/logout/$', logout),
     url(r'^accounts/delete_cookie/$', views.DeleteCookieView.as_view()),

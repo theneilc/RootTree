@@ -7,6 +7,7 @@ window.RootTree = (function() {
 	console.log('roottree constructor');
 	var watchers = {};
 	// to do read cookie and set user
+	
 	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
 	var url = 'http://localhost:8001/api/sessions/';
 
@@ -48,9 +49,20 @@ window.RootTree = (function() {
 	    delete watchers[session_id];
 	};
 
+	var popupIframe = function() {
+		$('#shit').bPopup({
+            content:'iframe', //'ajax', 'iframe' or 'image'
+            contentContainer:'.content',
+            loadUrl:'http://127.0.0.1:8000/accounts/login/clientuser/?next=/accounts/setcookie/' //Uses jQuery.load()
+        });
+	}
+
 	this.init = function(dev_key){
 	    this._developer = dev_key;
+	    console.log('are we here')
+	    
 	    // for now developer uuid and dev key are the same.
+	    popupIframe();
 	};
 
 	this.run = function(command, settings){
