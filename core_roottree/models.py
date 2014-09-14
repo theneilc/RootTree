@@ -33,6 +33,7 @@ class Developer(UserModelMixin, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
     company = models.CharField(max_length=100, default='')
+    url = models.URLField(null=True, blank=True)
 
 class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
