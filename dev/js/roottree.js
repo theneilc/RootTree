@@ -17,7 +17,6 @@ window.RootTree = (function() {
 	this.watchers = watchers; // for debug
 	// to do read cookie and set user
 	
-	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
 	var url = 'http://wwww.roottree.me/api/sessions/';
 
 	var getCookie = function(cname) {

@@ -32,7 +32,7 @@ class DeleteCookieView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         response = SimpleTemplateResponse(template=self.template_name)
-        response.delete_cookie('clientuser_uuid')
+        response.delete_cookie('uuid')
         return response
 
 class SetCookieViewDomain(TemplateView):
@@ -60,7 +60,7 @@ class SetCookieView(TemplateView):
         response = HttpResponseRedirect('/')
         if not request.user.is_anonymous():
             if request.user.related_clientuser:
-                response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+                response.set_cookie('uuid', request.user.related_clientuser.uuid)
                 response["P3P"] = 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"'
 
         return response
