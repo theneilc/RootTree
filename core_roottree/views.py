@@ -69,6 +69,7 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
     create_serializer_class = SessionWriteSerializer
 
     def list(self, request):
+        """
         # client long poll
         sessions = self.get_queryset()
         clientuser_user = request.user
@@ -83,6 +84,8 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         sessions_tasks_serialized = self.list_serializer_class(session_tasks).data
         sessions_services_serialized = self.list_serializer_class(session_services).data
         return Response(sessions_tasks_serialized + sessions_services_serialized)
+        """
+        return Response()
 
     def retrieve(self, request, **kwargs):
         # dev long poll alice
