@@ -112,8 +112,9 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         ret = super(SessionViewSet, self).get_permissions()
         print 'permissions', ret
         print 'method', self.request.method
-        if self.request.method == 'OPTIONS' or self.request.method == 'POST':
-            # temporary
+        if self.request.method == 'OPTIONS' or self.request.method == 'POST'\
+           or (self.request.method == 'GET' and self.kwargs.get('pk')):
+            # temporary. move to authentication.
             return []
         else:
             return ret
@@ -130,13 +131,16 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         if not clientuser_user:
             return Response([])
         client = ClientUser.objects.get(user=clientuser_user)
-        # fetch 'Not requested' sessions for client
-        # filter on if reverse relationships are not null
 
-        sessions_tasks = sessions.filter(client=client, status='P', commandinstance__command_task__isnull=False)
-        sessions_services = sessions.filter(client=client, status='P', commandinstance__command_service__isnull=False)
+        # fetch 'Not requested' sessions for client
+        sessions_tasks = sessions.filter(client=client, status='N', commandinstance__command_task__isnull=False)
+        sessions_services = sessions.filter(client=client, status='N', commandinstance__command_service__isnull=False)
         sessions_tasks_serialized = self.list_serializer_class(sessions_tasks, many=True).data
         sessions_services_serialized = self.list_serializer_class(sessions_services, many=True).data
+
+        # update the sessions to Pending
+        sessions_tasks.update(status='P')
+        sessions_services.update(status='P')
 
         return Response(sessions_tasks_serialized + sessions_services_serialized)
 
@@ -144,9 +148,9 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         # dev long poll alice
         session = self.get_object()
         if session.status == 'C':
-            return Response(session.get_result())
+            return self.allow_cross_domain(Response(session.get_result()))
         else:
-            return Response()
+            return self.allow_cross_domain(Response('pending'))
 
     def create(self, request):
         # dev execute alice
@@ -159,6 +163,10 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
                 command=command,
                 args=args,
                 kwargs=kwargs
+            )
+            # todo add in services later
+            task = Task.objects.create(
+                commandinstance=commandinstance
             )
             data = request.DATA.copy()
             data['commandinstance'] = commandinstance.id
@@ -180,6 +188,13 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
             return self.allow_cross_domain(
                 Response("Missing key %s." % e.message,
                          status=status.HTTP_400_BAD_REQUEST))
+
+        except Command.DoesNotExist as e:
+            print_exc()
+            return self.allow_cross_domain(
+                Response("Command %s does not exist" % request.DATA['command'],
+                         status=status.HTTP_404_NOT_FOUND))
+
         except:
             print_exc()
             return self.allow_cross_domain(

@@ -1,11 +1,12 @@
 import base64
-import hmac, hashlib
+import hmac, hashlib, os
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
 from datetime import datetime
 from core_roottree.mixins import *
 from django.conf import settings
+import requests
 
 
 DEFAULT_POLL_TIME = datetime(1901,1,1)
@@ -17,9 +18,11 @@ def build_absolute_uri(path, request=None):
     else:
         return settings.ABSOLUTE_URL_ROOT + path
 
+
 class CustomClientUserManager(models.Manager):
     def create_clientuser_from_user(self, user):
         self.model.objects.create(user=user)
+
 
 class ClientUser(UserModelMixin, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
@@ -28,12 +31,14 @@ class ClientUser(UserModelMixin, UUIDModelMixin):
     lastpolltime = models.DateTimeField(default=DEFAULT_POLL_TIME)
     objects = CustomClientUserManager()
 
+
 class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
     user = models.OneToOneField(User)
     company = models.CharField(max_length=100, default='')
     url = models.URLField(null=True, blank=True)
+
 
 class Session(TimeStampedModel, UUIDModelMixin):
     uuid = models.CharField(max_length=32, unique=True)
@@ -60,7 +65,8 @@ class Session(TimeStampedModel, UUIDModelMixin):
         # prettified result
         if self.result_url:
             # to do: handle more involved kinds of return values
-            content = self.result_url
+            r = requests.get(self.result_url)
+            content = r.text
             result = content.split('\n')
         else:
             result = None
@@ -78,8 +84,11 @@ class Session(TimeStampedModel, UUIDModelMixin):
 
     @property
     def s3_signature(self):
-        AWS_SECRET_ACCESS_KEY = open('/home/ubuntu/key.txt', 'r').read()
-        policy_document = open('/home/ubuntu/roottree_root/RootTree/client/policy_document.json', 'r').read()
+        AWS_SECRET_ACCESS_KEY = open(os.path.join(settings.BASE_DIR,'key.txt'),
+                                     'r').read()
+        policy_document = open(os.path.join(settings.BASE_DIR,
+                                            'client/policy_document.json'),
+                               'r').read()
         policy = base64.b64encode(policy_document)
         signature = base64.b64encode(hmac.new(AWS_SECRET_ACCESS_KEY, policy, hashlib.sha1).digest())
 
