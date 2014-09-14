@@ -208,7 +208,7 @@ def python_handle(ex_dict):
     return s.getvalue()
 
 def upload_file(policy, signature, uuid, filepath=None, content=None):
-    url = 'https://roottreebucket.s3.amazonaws.com/'
+    url = 'http://roottreebucket.s3.amazonaws.com/'
     payload = {
                 'key': '${filename}',
                 'AWSAccessKeyId': AWSAccessKeyId,
