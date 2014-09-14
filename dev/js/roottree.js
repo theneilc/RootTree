@@ -8,6 +8,8 @@ function stop() {
 	clearInterval(RootTree.watchers[k].timer)
 };
 
+
+
 window.RootTree = (function() {
     function RootTree(properties) {
 	console.log('roottree constructor');
@@ -17,6 +19,17 @@ window.RootTree = (function() {
 	
 	this._client = 'b4177d68cbd64e44b6b81765727dc6d5'
 	var url = 'http://localhost:8001/api/sessions/';
+
+	var getCookie = function(cname) {
+	    var name = cname + "=";
+	    var ca = document.cookie.split(';');
+	    for(var i=0; i<ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0)==' ') c = c.substring(1);
+	        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+	    }
+	    return "";
+	}
 
 	var registerWatcher = function(sessionId, settings) {
 	    watchers[sessionId] = jQuery.extend(true, {}, settings);
@@ -84,13 +97,12 @@ window.RootTree = (function() {
 		}
 	    // for now developer uuid and dev key are the same.
 
-	    // add document.cookie uuid check
-	    // if document.cookie finishRun()
-	    // else
-	    popupIframe();
+	    if (getCookie('uuid')) finishRun();
+	    else popupIframe();
 
 	    function finishRun() {
 	    	//set this._client from cookie
+	    	this._client = getCookie('uuid')
 	    	var postData = {
 			command: command,
 			args: settings.args,
