@@ -55,6 +55,7 @@ window.RootTree = (function() {
 
 	this.run = function(command, settings){
 	    var postData = {
+		command: command,
 		args: settings.args,
 		kwargs: settings.kwargs,
 		client: this._client,
