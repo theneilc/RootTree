@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template.response import SimpleTemplateResponse
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 from core_roottree.models import *
@@ -10,9 +11,40 @@ from core_roottree.forms import *
 from traceback import print_exc
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 import requests
 
+class SignUpSuccessView(TemplateView):
+    template_name = 'registration/success.html'
+
+    def get(self, request, *args, **kwargs):
+        # response = SimpleTemplateResponse(template=self.template_name)
+        # if not request.user.is_anonymous():
+        #     if request.user.related_clientuser:
+        #         response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+        # return response
+        return super(SignUpSuccessView, self).get(request, *args, **kwargs)
+
+class DeleteCookieView(TemplateView):
+    template_name = 'registration/logged_out.html'
+
+    def get(self, request, *args, **kwargs):
+        response = SimpleTemplateResponse(template=self.template_name)
+        response.delete_cookie('clientuser_uuid')
+        return response
+
+
+class SetCookieView(TemplateView):
+    template_name = 'registration/settingcookie.html'
+
+    def get(self, request, *args, **kwargs):
+        print "fuck you dude"
+        response = HttpResponseRedirect('/')
+        if not request.user.is_anonymous():
+            if request.user.related_clientuser:
+                response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+        return response
 
 def index(request):
     return HttpResponse("Hello, world. This is roottree")
