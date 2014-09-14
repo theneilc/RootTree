@@ -101,7 +101,7 @@ def get_credentials_from_file():
 
 def getpwd(errorflag=0):
     """ Prompts the running Python process with a Tkinter GUI for confirming
-        the input username and password with Dentboard
+        the input username and password 
     """
     credentials = []
     root = Tk()
@@ -122,7 +122,7 @@ def getpwd(errorflag=0):
             Label(root, text = "Your username or password were incorrect") \
                  .pack(side='top')
 
-    Label(root, text = 'TheDentboard Username').pack(side = 'top')
+    Label(root, text = 'RootTree Username').pack(side = 'top')
     usrbox.pack(side = 'top')
 
     Label(root, text = 'Password').pack(side = 'top')
