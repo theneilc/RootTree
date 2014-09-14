@@ -11,7 +11,7 @@ commands = {
 	'install_brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
 	'install_npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
 	'install_node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
-	'install_clumsybird': ['git clone https://github.com/ellisonleao/clumsy-bird; cd clumsy-bird; npm install; (grunt connect&); sleep 2; open http://localhost:8001/;', 'b'],
+	'install_clumsybird': ["""osascript -e 'display notification "A browser will open up when done" with title "Cloning and setting up!"';git clone https://github.com/ellisonleao/clumsy-bird; cd clumsy-bird; npm install; (grunt connect&); sleep 2; open http://localhost:8001/;""", 'b'],
 	'install_ino': ['pip install ino', 'b'],
 	'upload_arduino': ['mkdir tutorial_1;cd tutorial_1; ino init; echo "%s"> sketch.ino; ino build; ino upload; osascript -e "Sketch uploaded!" with title "Complete!"','b'],
 	'notify_desktop': ['osascript -e \'display notification \"%s\" with title \"%s\"\'', 'b'],
