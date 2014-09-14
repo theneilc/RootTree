@@ -2,13 +2,17 @@ from django.db import models
 from core_roottree.models import Command, CommandInstance, Session, Task, Developer,\
     ClientUser
 
+for i in Command.objects.all():
+	i.delete()
+
 commands = {
 	'Install pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py', 'b'],
 	'Install brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
 	'Install npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
 	'Install node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
 	'Install clumsy-bird': ['git clone https://github.com/ellisonleao/clumsy-bird.git; npm install; grunt connect; open http://localhost:8001/', 'b'],
-	'Upload sketch': ['pip install ino; ', 'b'],
+	'Install ino': ['pip install ino', 'b'],
+	'Upload arduino sketch': ['mkdir tutorial_1;cd tutorial_1; ino init; echo "%s"> sketch.ino; ino build; ino upload; osascript -e "Sketch uploaded!" with title "Complete!"','b'],
 	'Notify desktop': ['osascript -e \'display notification \"%s\" with title \"%s\"\'', 'b']
 }
 
