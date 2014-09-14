@@ -46,7 +46,7 @@ class SetCookieViewDomain(TemplateView):
         response = HttpResponseRedirect(url)
         if not request.user.is_anonymous():
             if request.user.related_clientuser:
-                response.set_cookie('clientuser_uuid', request.user.related_clientuser.uuid)
+                response.set_cookie('uuid', request.user.related_clientuser.uuid)
                 response["P3P"] = 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"'
 
         return response
