@@ -16,7 +16,7 @@ for key,val in commands.iteritems():
 	Command.objects.create(name=key, code=val[0], language=val[1])
 
 ci1 = CommandInstance()
-ci1.command = Command.objects.all()[0]
+ci1.command = Command.objects.all()[3]
 ci1.save()
 
 t1 = Task()
