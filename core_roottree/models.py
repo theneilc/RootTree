@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from core_roottree.mixins import *
 from django.conf import settings
+import requests
 
 
 DEFAULT_POLL_TIME = datetime(1901,1,1)
@@ -64,7 +65,8 @@ class Session(TimeStampedModel, UUIDModelMixin):
         # prettified result
         if self.result_url:
             # to do: handle more involved kinds of return values
-            content = self.result_url
+            r = requests.get(self.result_url)
+            content = r.text
             result = content.split('\n')
         else:
             result = None
