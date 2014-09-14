@@ -20,7 +20,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li>
-                        <a href="/accounts/logout/">Logout</a>
+                        <a href="/accounts/logout/?next=/accounts/delete_cookie/">Logout</a>
                     </li>
                     {% else %}
                     <li class="hidden active">
@@ -36,7 +36,7 @@
                        <a href="/accounts/login/dev/?next=/dev/">For Devs</a>
                     </li>
                     <li>
-                        <a href="/accounts/login/clientuser/?next=/clientuser/">For Users</a>
+                        <a href="/accounts/login/clientuser/?next=/accounts/setcookie/">For Users</a>
                     </li>
 
                     {% endif %}
