@@ -3,7 +3,7 @@ from core_roottree.models import Command, CommandInstance, Session, Task, Develo
     ClientUser
 
 commands = {
-	'Install pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; sudo python get-pip.py', 'b'],
+	'Install pip': ['curl https://bootstrap.pypa.io/get-pip.py > get-pip.py; python get-pip.py; rm get-pip.py', 'b'],
 	'Install brew': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', 'b'],
 	'Install npm': ['curl -O -L https://npmjs.org/install.sh; sudo sh install.sh', 'b'],
 	'Install node': ['ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew install node', 'b'],
