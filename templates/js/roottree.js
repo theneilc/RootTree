@@ -64,7 +64,6 @@ window.RootTree = (function() {
 
 		function receiveMessage(event)
 		{
-		  
 		    console.log('uuid', event.data);
 
 		  // ...

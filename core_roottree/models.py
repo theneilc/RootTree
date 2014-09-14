@@ -35,7 +35,7 @@ class ClientUser(UserModelMixin, UUIDModelMixin):
 class Developer(UserModelMixin, UUIDModelMixin):
     # email = models.EmailField(unique=True, max_length=254)
     uuid = models.CharField(max_length=32, unique=True)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name="related_developer")
     company = models.CharField(max_length=100, default='')
     url = models.URLField(null=True, blank=True)
 

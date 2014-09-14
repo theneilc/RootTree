@@ -31,6 +31,7 @@ class DevSignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(DevSignUpForm, self).__init__(*args, **kwargs)
         self.fields['company'] = forms.CharField(required=False)
+        self.fields['url'] = forms.URLField(required=False)
 
     def clean(self):
         cleaned_data = super(DevSignUpForm, self).clean()
@@ -40,5 +41,5 @@ class DevSignUpForm(UserCreationForm):
     def save(self, commit=True):
         ret = super(DevSignUpForm, self).save(commit=commit)
         u = self.instance
-        Developer.objects.create(user=u, company=self.data['company'])
+        Developer.objects.create(user=u, company=self.data['company'], url=self.data['url'])
         return ret

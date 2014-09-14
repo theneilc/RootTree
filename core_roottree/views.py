@@ -229,3 +229,17 @@ class SessionViewSet(UUIDLookupViewSetMixin, viewsets.ModelViewSet):
         session.status = 'C'
         session.save()
         return Response(self.complete_serializer_class(session).data)
+
+class DevHomeView(TemplateView):
+    template_name = 'dev_home.html'
+    def get_context_data(self, **kwargs):
+        context = {}
+        user = self.request.user
+        developer = user.related_developer
+        context['company'] = developer.company
+        context['url'] = developer.url
+        context['uuid'] = developer.uuid
+        context['commands'] = CommandSerializer(Command.objects.all(), many=True).data
+        return context
+
+
