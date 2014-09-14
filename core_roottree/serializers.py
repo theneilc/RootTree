@@ -22,7 +22,7 @@ class SessionListSerializer(serializers.ModelSerializer):
 
 	def get_code_with_args(self, obj):
 		if obj.commandinstance.args:
-			args = obj.commandinstance.args.split(',')
+			args = obj.commandinstance.args.split('~')
 			args = tuple(args)
 			return obj.commandinstance.command.code%args
 		else:
